@@ -1,122 +1,42 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import SuitPicker from './components/SuitPicker';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <main className="min-h-screen p-8 md:p-16 flex flex-col justify-between max-w-4xl mx-auto">
+      <header className="flex justify-between items-center mb-12">
+        <span className="hud-label text-sm text-[var(--muted)]">Echoes in the Dust</span>
+        <SuitPicker />
+      </header>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+      <section className="space-y-6 my-auto">
+        <h1 className="text-[var(--ink)] tracking-tight">
+          The Great Cosmic Relay Race
+        </h1>
+        <p className="max-w-[60ch] text-[var(--muted)]">
+          Three quiet explorers were left across the Moon and Mars. Each ran one leg of humanity’s journey and passed the baton on to the next.
+        </p>
+        <div className="pt-4 flex flex-wrap gap-4 items-center">
+          <button
+            type="button"
+            className="theme-btn px-6 py-3 font-medium transition cursor-pointer min-h-[44px]"
+            style={{
+              backgroundColor: 'var(--accent)',
+              color: 'var(--bg)',
+              borderRadius: 'var(--radius)',
+            }}
+          >
+            Engage Helmet
+          </button>
+          <span className="hud-label text-xs text-[var(--muted)]">
+            Testing suit colors & typography
+          </span>
         </div>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <footer className="mt-16 pt-6 border-t border-[var(--muted)]/20 text-xs text-[var(--muted)] flex justify-between items-center">
+        <span>NASA Space Apps Challenge 2026</span>
+        <span className="hud-label">Systems Online</span>
+      </footer>
+    </main>
+  );
 }
-
-export default App

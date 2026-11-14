@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
+  --radius-theme: var(--radius);
+
+  --font-display: "Fraunces Variable", "Fraunces", serif;
+  --font-body: "Atkinson Hyperlegible Next Variable", "Atkinson Hyperlegible Next", sans-serif;
+  --font-mono: "Atkinson Hyperlegible Mono", monospace;
+}
+
+/* Suit design system variables */
+:root,
+[data-suit="daylight"] {
+  --bg: #F6F0E4;
+  --surface: #FFFFFF;
+  --ink: #1E2A3A;
+  --muted: #5B6675;
+  --accent: #C0462B;
+  --accent-2: #3D7BC4;
+  --accent-3: #E8B04A;
+  --radius: 12px;
+}
+
+[data-suit="stardust"] {
+  --bg: #1B1430;
+  --surface: #251C40;
+  --ink: #F7EEF5;
+  --muted: #BFB3CF;
+  --accent: #F4A7B9;
+  --accent-2: #B9A3E3;
+  --accent-3: #FFD3B0;
+  --radius: 20px;
+}
+
+[data-suit="rocketeer"] {
+  --bg: #12161C;
+  --surface: #1C222B;
+  --ink: #EEF1F4;
+  --muted: #9BA8B5;
+  --accent: #FF6B1A;
+  --accent-2: #FFC83D;
+  --accent-3: #9BA8B5;
+  --radius: 4px;
+}
+
+/* Planet backdrop tinting */
+[data-planet="moon"] {
+  --planet-tint: rgba(180, 185, 195, 0.08);
+}
+
+[data-planet="mars"] {
+  --planet-tint: rgba(192, 70, 43, 0.12);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.25rem); /* 18px -> 20px */
+  line-height: 1.6;
+  min-height: 100vh;
+  margin: 0;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Fluid type scale */
+h1, .h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 1.5rem + 5vw, 6rem); /* 44px -> 96px */
+  line-height: 1.05;
+}
+
+h2, .h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.35rem + 2.6vw, 3.5rem); /* 32px -> 56px */
+  line-height: 1.1;
+}
+
+h3, .h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.3rem + 0.9vw, 2rem); /* 24px -> 32px */
+  line-height: 1.2;
+}
+
+.hud-label {
+  font-family: var(--font-mono);
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem); /* 12px -> 14px */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Suit button tactile motion styles */
+[data-suit="rocketeer"] .theme-btn:active {
+  transform: translateY(2px);
+}
+
+[data-suit="stardust"] .theme-btn:active {
+  transform: scale(0.96);
+}
