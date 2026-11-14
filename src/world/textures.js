@@ -111,27 +111,86 @@ function planetMap(w, h, colorAt) {
 const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 const sn = (X, Y, Z, k, seed) => 0.5 * fbm(X * k + 11, Y * k + Z * 0.7 * k, 4, seed) + 0.5 * fbm(Y * k - 5, Z * k + X * 0.6 * k, 4, seed + 3);
 
+/** procedural Moon texture: grey highlands, dark maria (seas), polar shading */
+export const moonMapProc = () =>
+  once('moonProc', () =>
+    planetMap(1024, 512, (X, Y, Z, lat) => {
+      const highlands = sn(X, Y, Z, 2.6, 17) * 0.5 + 0.5;
+      const fine = sn(X, Y, Z, 11, 29) * 0.14;
+      // maria (dark lunar seas): concentrated near equator/near side
+      const lon = Math.atan2(Z, X);
+      const maria1 = Math.max(0, 1 - Math.hypot((lon + 0.5) * 2.2, lat * 3));  // Mare Tranquillitatis area
+      const maria2 = Math.max(0, 1 - Math.hypot((lon - 1.0) * 2.5, lat * 2.8)); // Mare Imbrium area
+      const maria3 = Math.max(0, 1 - Math.hypot((lon + 1.8) * 2, (lat - 0.2) * 3.2)); // Oceanus Procellarum
+      const mariaBlend = Math.min(1, (maria1 + maria2 * 0.8 + maria3 * 0.9) * 0.65);
+      let c = mix([155, 150, 145], [195, 190, 185], Math.min(1, highlands + fine));
+      c = mix(c, [52, 50, 48], mariaBlend);
+      const polar = Math.max(0, (Math.abs(lat) - 1.3) / 0.25);
+      if (polar > 0) c = mix(c, [200, 198, 195], Math.min(1, polar));
+      return c;
+    }),
+  );
+
 export const earthMap = () =>
   once('earth', () =>
-    planetMap(512, 256, (X, Y, Z, lat) => {
+    planetMap(1024, 512, (X, Y, Z, lat) => {
+      // multi-octave noise for continents vs ocean
       const n = sn(X, Y, Z, 2.4, 31);
-      const polar = Math.max(0, (lat - 0.95) / 0.35); // the hill patch sits at the north pole: keep it green there
-      const land = n > 0.04 || polar > 0.5;
-      let c = land ? mix([52, 80, 50], [110, 104, 66], Math.max(0, n * 2)) : mix([14, 34, 72], [22, 54, 98], n + 0.5);
-      if (polar > 0) c = mix(c, [58, 84, 54], Math.min(1, polar));
+      const detail = sn(X, Y, Z, 6.1, 44) * 0.3;
+      const fine = sn(X, Y, Z, 14, 59) * 0.08;
+      const landNoise = n + detail + fine;
+
+      // polar regions
+      const absLat = Math.abs(lat);
+      const arcticIce = Math.max(0, (absLat - 1.22) / 0.22); // north pole ice
+      const antarcticIce = Math.max(0, (absLat - 1.14) / 0.26); // south pole (wider)
+      const polar = Math.max(arcticIce, antarcticIce);
+
+      // land/ocean decision
+      const land = landNoise > 0.04 || polar > 0.4;
+
+      let c;
+      if (!land) {
+        // ocean: deep blue to teal variation
+        const shallow = Math.max(0, (landNoise - 0.0) * 3);
+        c = mix([10, 28, 72], [22, 68, 110], Math.min(1, shallow + sn(X,Y,Z,8,22)*0.25));
+      } else {
+        // land: dark forest green base, lighter highlands
+        c = mix([42, 72, 42], [96, 100, 56], Math.max(0, landNoise * 1.8 + fine));
+        // deserts near equator low-lat
+        const desert = sn(X, Y, Z, 5, 88) * 0.5;
+        const isDesert = absLat < 0.55 && desert > 0.18 && landNoise < 0.35;
+        if (isDesert) c = mix(c, [188, 150, 90], Math.min(1, (desert - 0.18) * 4));
+      }
+      // ice caps blend in
+      if (polar > 0) c = mix(c, [220, 230, 240], Math.min(1, polar * 2.5));
+      // subtle specular highlight on poles (brightness)
+      if (polar > 0.5) c = mix(c, [245, 250, 255], (polar - 0.5) * 1.4);
+
       return c;
     }),
   );
 
 export const marsMap = () =>
   once('mars', () =>
-    planetMap(512, 256, (X, Y, Z, lat) => {
+    planetMap(1024, 512, (X, Y, Z, lat) => {
       const n = sn(X, Y, Z, 2.8, 51);
       const m = sn(X, Y, Z, 9, 77);
+      const fine = sn(X, Y, Z, 18, 63) * 0.12;
+      // base rusty ochre
       let c = mix([176, 88, 46], [122, 52, 30], Math.max(0, n * 1.8));
-      c = mix(c, [205, 130, 80], Math.max(0, m) * 0.5);
-      const polar = Math.max(0, (lat - 1.0) / 0.3);
-      if (polar > 0) c = mix(c, [178, 96, 56], Math.min(1, polar));
+      // lighter dust / sand highlights
+      c = mix(c, [210, 140, 85], Math.max(0, m + fine) * 0.6);
+      // darker volcanic basalt regions
+      const basalt = sn(X, Y, Z, 4.2, 39);
+      if (basalt < -0.25) c = mix(c, [78, 38, 22], Math.min(1, (-basalt - 0.25) * 2.5));
+      // Valles Marineris-like dark scar (lon near 300°, lat near 0)
+      const lon = Math.atan2(Z, X); // -pi..pi
+      const valles = Math.max(0, 1 - Math.hypot((lon - (-0.52)) * 3, lat * 8));
+      if (valles > 0) c = mix(c, [60, 28, 18], valles * 0.6);
+      // polar ice
+      const polar = Math.max(0, (Math.abs(lat) - 1.08) / 0.28);
+      if (polar > 0) c = mix(c, [210, 190, 170], Math.min(1, polar * 2.2));
       return c;
     }),
   );

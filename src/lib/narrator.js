@@ -12,6 +12,7 @@ import { lenis } from './smoothScroll';
 import { getState, setState, live } from './store';
 import { locate, progressAt, lineAtTime, lineStopTime } from './timeline';
 import { clamp01, damp } from './math';
+import { unlockAudio, muteSounds, updateAmbient, playRocketLaunch } from './sounds';
 
 const LAST = tracks.length - 1;
 let audios = [];
@@ -68,6 +69,7 @@ function playLine(ti, li) {
 }
 
 function unlock() {
+  unlockAudio();
   if (getState().unlocked) return;
   setState({ unlocked: true });
 }
@@ -151,6 +153,7 @@ export function toggleMute() {
   audios.forEach((a) => {
     a.muted = muted;
   });
+  muteSounds(muted);
   setState({ muted });
 }
 
@@ -239,6 +242,12 @@ function tick() {
   const playing = virtual ? !virtual.paused : !a.paused;
   if (ti !== s.act || li !== s.li || playing !== s.playing) {
     setState({ act: ti, li, playing, card: ti !== s.act ? null : s.card });
+  }
+
+  // ambient audio and sfx
+  updateAmbient(ti, live.progress);
+  if (live.progress >= 0.14 && live.progress <= 0.22) {
+    playRocketLaunch();
   }
 }
 

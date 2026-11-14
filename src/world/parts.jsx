@@ -2,7 +2,7 @@ import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
-import { live, discover } from '../lib/store';
+import { live, triggerRobotAnimation, openSketchbook, discover } from '../lib/store';
 import { band } from '../lib/math';
 import { ring, softDot } from './textures';
 
@@ -28,14 +28,14 @@ export function Strut({ a, b, r = 0.025, color = '#b9b6ae', metalness = 0.6 }) {
   );
 }
 
-/** pointer props that make any group tappable (ignores scroll-drags) */
+/** pointer props that make any group tappable (ignores scroll-drags) — triggers in-world robot animation */
 export function useClickable(id) {
   return useMemo(
     () => ({
       onClick: (e) => {
         if (e.delta > 10) return;
         e.stopPropagation();
-        discover(id);
+        triggerRobotAnimation(id);
       },
       onPointerOver: (e) => {
         e.stopPropagation();
@@ -49,12 +49,28 @@ export function useClickable(id) {
   );
 }
 
-/** pulsing discovery beacon — tap it (or the robot) to start the interaction */
+/** pulsing discovery beacon — tap it to open the Explorer Sketchbook field notes */
 export function Beacon({ id, position, window: [p0, p1], scale = 1 }) {
   const group = useRef();
   const ringRef = useRef();
   const core = useRef();
-  const click = useClickable(id);
+  const beaconClick = useMemo(
+    () => ({
+      onClick: (e) => {
+        if (e.delta > 10) return;
+        e.stopPropagation();
+        openSketchbook(id);
+      },
+      onPointerOver: (e) => {
+        e.stopPropagation();
+        document.body.style.cursor = 'pointer';
+      },
+      onPointerOut: () => {
+        document.body.style.cursor = '';
+      },
+    }),
+    [id],
+  );
   useFrame((state) => {
     const vis = band(live.progress, p0, p0 + 0.01, p1 - 0.01, p1);
     group.current.visible = vis > 0.01;
@@ -67,7 +83,7 @@ export function Beacon({ id, position, window: [p0, p1], scale = 1 }) {
     core.current.material.opacity = vis * (found ? 0.4 : 0.85 + Math.sin(t * 4) * 0.15);
   });
   return (
-    <group ref={group} position={position} {...click}>
+    <group ref={group} position={position} {...beaconClick}>
       <sprite ref={ringRef}>
         <spriteMaterial map={ring()} color="#ffe2b0" transparent depthWrite={false} depthTest={false} blending={THREE.AdditiveBlending} />
       </sprite>

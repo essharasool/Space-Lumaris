@@ -4,29 +4,52 @@ import { useGSAP } from '@gsap/react';
 import { X } from 'lucide-react';
 import { missions, story } from '../data/missions';
 import { setState, useStore } from '../lib/store';
+import { lenis } from '../lib/smoothScroll';
+import { playStampSound } from '../lib/sounds';
 
-/** "Explorer Sketchbook" page that blooms open when a kid taps a robot or its beacon */
+/** "Explorer Sketchbook" page — slides up from the bottom without blocking the full 3D view */
 export default function Sketchbook() {
   const id = useStore((s) => s.card);
   const m = missions.find((x) => x.id === id);
+  const wrap = useRef();
   const card = useRef();
   const art = useRef();
   const closeBtn = useRef();
   const close = () => setState({ card: null });
 
+  // stop / resume Lenis when open so the panel scrolls, not the story
+  useEffect(() => {
+    if (m) {
+      lenis?.stop();
+    } else {
+      lenis?.start();
+    }
+    return () => lenis?.start();
+  }, [m]);
+
   useGSAP(
     () => {
-      if (!m || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (!m) return;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) {
+        gsap.set(wrap.current, { opacity: 1, y: 0 });
+        return;
+      }
+      // slide up from below
       gsap.fromTo(
-        card.current,
-        { opacity: 0, scale: 0.7, rotate: -7, y: 40 },
-        { opacity: 1, scale: 1, rotate: -1.5, y: 0, duration: 0.8, ease: 'back.out(1.6)' },
+        wrap.current,
+        { opacity: 0, y: 80 },
+        { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' },
       );
-      gsap.fromTo(art.current, { scale: 0.5, rotate: 8, opacity: 0 }, { scale: 1, rotate: 0, opacity: 1, duration: 0.9, delay: 0.15, ease: 'back.out(1.8)' });
-      gsap.fromTo('.sketch-fact', { opacity: 0, x: -12 }, { opacity: 1, x: 0, stagger: 0.08, delay: 0.3, duration: 0.5, ease: 'power2.out' });
-      gsap.fromTo('.sketch-stamp', { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, delay: 0.7, duration: 0.35, ease: 'power3.in' });
+      gsap.fromTo(art.current, { scale: 0.6, rotate: 10, opacity: 0 }, { scale: 1, rotate: 0, opacity: 1, duration: 0.75, delay: 0.12, ease: 'back.out(1.6)' });
+      gsap.fromTo('.sketch-fact', { opacity: 0, x: -14 }, { opacity: 1, x: 0, stagger: 0.07, delay: 0.25, duration: 0.45, ease: 'power2.out' });
+      gsap.fromTo(
+        '.sketch-stamp',
+        { scale: 2.0, opacity: 0 },
+        { scale: 1, opacity: 1, delay: 0.6, duration: 0.3, ease: 'power3.in', onStart: () => playStampSound() },
+      );
     },
-    { dependencies: [id], scope: card },
+    { dependencies: [id], scope: wrap },
   );
 
   useEffect(() => {
@@ -39,7 +62,7 @@ export default function Sketchbook() {
 
   if (!m) return null;
 
-  // parallax tilt: the drawing leans toward your finger / mouse
+  // parallax tilt on mouse hover
   const onMove = (e) => {
     const r = card.current.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
@@ -49,7 +72,7 @@ export default function Sketchbook() {
   const onLeave = () => gsap.to(art.current, { rotateY: 0, rotateX: 0, x: 0, y: 0, duration: 0.6 });
 
   return (
-    <aside className="sketch-wrap" aria-label={`${m.title} sketchbook page`}>
+    <aside ref={wrap} className="sketch-wrap" aria-label={`${m.title} sketchbook page`}>
       <div ref={card} className="sketch" onPointerMove={onMove} onPointerLeave={onLeave} data-lenis-prevent>
         <span className="sketch-tape sketch-tape--l" aria-hidden="true" />
         <span className="sketch-tape sketch-tape--r" aria-hidden="true" />

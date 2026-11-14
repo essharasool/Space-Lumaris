@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { missions, story } from '../data/missions';
-import { live, useStore } from '../lib/store';
+import { live, useStore, triggerRobotAnimation, openSketchbook } from '../lib/store';
 import { band, ramp, sramp } from '../lib/math';
 import { splitEm } from './words';
 
@@ -83,26 +83,45 @@ function Telemetry() {
 
 function DiscoveryHint() {
   const act = useStore((s) => s.act);
-  const found = useStore((s) => s.found);
   const el = useRef();
   const m = missions.find((x) => x.act === act);
   useEffect(() => {
     if (!m) return undefined;
     const [a, b] = HINT_WIN[m.id];
     const f = () => {
-      const o = found[m.id] ? 0 : band(live.progress, a, a + 0.008, b - 0.008, b);
+      const o = band(live.progress, a, a + 0.008, b - 0.008, b);
       el.current.style.opacity = o.toFixed(3);
       el.current.style.visibility = o > 0.001 ? 'visible' : 'hidden';
     };
     gsap.ticker.add(f);
     return () => gsap.ticker.remove(f);
-  }, [m, found]);
+  }, [m]);
   if (!m) return null;
   return (
-    <p ref={el} className="discover-hint" style={{ opacity: 0 }}>
-      <span className="discover-dot" aria-hidden="true" />
-      {m.hint}
-    </p>
+    <div ref={el} className="discover-hint" style={{ opacity: 0 }}>
+      <p className="discover-hint-text">
+        <span className="discover-dot" aria-hidden="true" />
+        {m.hint}
+      </p>
+      <div className="discover-actions">
+        <button
+          type="button"
+          className="discover-btn"
+          onClick={() => triggerRobotAnimation(m.id)}
+          aria-label={`Animate ${m.title}`}
+        >
+          ⚡ Animate
+        </button>
+        <button
+          type="button"
+          className="discover-btn discover-btn--notes"
+          onClick={() => openSketchbook(m.id)}
+          aria-label={`Open ${m.title} field notes`}
+        >
+          📖 Field Notes
+        </button>
+      </div>
+    </div>
   );
 }
 

@@ -16,14 +16,23 @@ const Y_AXIS = new THREE.Vector3(0, 1, 0);
 /** stylized rocket: ignites on "...but with a rocket." and streaks upward */
 function Rocket() {
   const ship = useRef();
-  const flame = useRef();
-  const glow = useRef();
+  const flame = useRef();      // main cone
+  const flameInner = useRef(); // white-hot core
+  const flameTip = useRef();   // dark blue base
+  const glow = useRef();       // big orange glow halo
+  const heatHaze = useRef();   // wide diffuse bloom
   const trail = useRef();
-  const smoke = useRef([]);
+  const steam = useRef([]);
   const puffs = useMemo(() => {
     const r = rng(3);
     return Array.from({ length: 10 }, () => ({ x: (r() - 0.5) * 10, z: (r() - 0.5) * 10, s: 6 + r() * 6 }));
   }, []);
+  // extra exhaust spark sprites
+  const sparks = useMemo(() => {
+    const r = rng(42);
+    return Array.from({ length: 16 }, () => ({ x: (r() - 0.5) * 2.4, z: (r() - 0.5) * 2.4, s: 2.5 + r() * 3 }));
+  }, []);
+  const sparkRefs = useRef([]);
 
   useFrame((state) => {
     const p = live.progress;
@@ -35,19 +44,59 @@ function Rocket() {
     const y = 700 * lift ** 2.2;
     ship.current.position.y = y;
     ship.current.rotation.z = -0.12 * lift;
-    const f = ignite * (0.85 + Math.sin(state.clock.elapsedTime * 40) * 0.1);
-    flame.current.scale.set(f, f * (1 + lift * 1.5), f);
+
+    const t = state.clock.elapsedTime;
+    // flicker: combine multiple frequencies for realism
+    const flicker = ignite * (0.82 + Math.sin(t * 38) * 0.09 + Math.sin(t * 71) * 0.06 + Math.sin(t * 23) * 0.03);
+    const stretch = 1 + lift * 1.6;
+
+    // outer orange cone
+    flame.current.scale.set(flicker, flicker * stretch, flicker);
     flame.current.visible = ignite > 0.01;
-    glow.current.material.opacity = 0.8 * ignite;
+    flame.current.material.opacity = 0.75 * ignite;
+
+    // white-hot inner core (smaller, brighter)
+    flameInner.current.scale.set(flicker * 0.42, flicker * stretch * 0.65, flicker * 0.42);
+    flameInner.current.visible = ignite > 0.01;
+    flameInner.current.material.opacity = 0.92 * ignite;
+
+    // deep blue base (mach diamond / combustion zone)
+    flameTip.current.scale.set(flicker * 0.22, flicker * 0.4, flicker * 0.22);
+    flameTip.current.visible = ignite > 0.01;
+    flameTip.current.material.opacity = 0.65 * ignite;
+
+    // big glow halo around engine
+    glow.current.material.opacity = 0.65 * ignite;
+    glow.current.scale.setScalar(16 + Math.sin(t * 30) * 1.5);
+
+    // heat-haze/bloom — wider, dimmer
+    if (heatHaze.current) {
+      heatHaze.current.material.opacity = 0.22 * ignite;
+      heatHaze.current.scale.setScalar(28 + Math.sin(t * 11) * 2);
+    }
+
+    // exhaust trail behind
     trail.current.visible = y > 1;
     trail.current.scale.set(1, Math.max(0.01, y), 1);
     trail.current.position.y = y / 2;
-    trail.current.material.opacity = 0.3 * ignite * (1 - sramp(p, 0.215, 0.24));
-    smoke.current.forEach((s, i) => {
+    trail.current.material.opacity = 0.28 * ignite * (1 - sramp(p, 0.215, 0.24));
+
+    // steam puffs at pad
+    steam.current.forEach((s, i) => {
       if (!s) return;
       const grow = ignite * (1 + lift * 3);
       s.scale.setScalar(puffs[i].s * grow + 0.01);
-      s.material.opacity = 0.5 * ignite * (1 - lift * 0.8);
+      s.material.opacity = 0.45 * ignite * (1 - lift * 0.8);
+    });
+
+    // sparks scattering outward from nozzle
+    sparkRefs.current.forEach((s, i) => {
+      if (!s) return;
+      const sp = sparks[i];
+      const ang = i * 1.37 + t * (2 + i * 0.3);
+      s.position.set(Math.cos(ang) * sp.x, -1.8 - i * 0.15 * ignite, Math.sin(ang) * sp.z);
+      s.scale.setScalar(sp.s * 0.1 * ignite * (0.6 + Math.sin(t * 20 + i) * 0.4));
+      s.material.opacity = 0.6 * ignite * (1 - lift * 0.9);
     });
   });
 
@@ -58,6 +107,11 @@ function Rocket() {
         <cylinderGeometry args={[7, 7.5, 0.8, 32]} />
         <meshStandardMaterial color="#6d6b68" roughness={0.9} />
       </mesh>
+      {/* pad surface detail ring */}
+      <mesh position={[0, 0.65, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[4.5, 7, 32]} />
+        <meshStandardMaterial color="#56534f" roughness={1} />
+      </mesh>
       <mesh position={[3.4, 9, 0]}>
         <boxGeometry args={[1, 18, 1]} />
         <meshStandardMaterial color="#8a3b26" roughness={0.7} />
@@ -66,8 +120,13 @@ function Rocket() {
         <boxGeometry args={[2.2, 0.3, 0.5]} />
         <meshStandardMaterial color="#8a3b26" />
       </mesh>
+      {/* arm horizontal brace */}
+      <mesh position={[1.7, 10.5, 0]}>
+        <boxGeometry args={[1.4, 0.2, 0.3]} />
+        <meshStandardMaterial color="#8a3b26" />
+      </mesh>
       {puffs.map((pf, i) => (
-        <sprite key={i} ref={(s) => (smoke.current[i] = s)} position={[pf.x, 2, pf.z]}>
+        <sprite key={i} ref={(s) => (steam.current[i] = s)} position={[pf.x, 2, pf.z]}>
           <spriteMaterial map={puff()} color="#e9e2da" transparent opacity={0} depthWrite={false} />
         </sprite>
       ))}
@@ -79,6 +138,11 @@ function Rocket() {
         <mesh position={[0, 5.6, 0]}>
           <cylinderGeometry args={[1.1, 1.1, 9, 32]} />
           <meshStandardMaterial color={WHITE} roughness={0.4} metalness={0.1} />
+        </mesh>
+        {/* panel lines */}
+        <mesh position={[0, 5.6, 0]}>
+          <cylinderGeometry args={[1.12, 1.12, 9, 32, 1, true]} />
+          <meshStandardMaterial color="#c8c5be" roughness={0.6} transparent opacity={0.4} side={THREE.BackSide} />
         </mesh>
         <mesh position={[0, 3, 0]}>
           <cylinderGeometry args={[1.12, 1.12, 0.6, 32]} />
@@ -104,13 +168,36 @@ function Rocket() {
           <cylinderGeometry args={[0.6, 0.9, 1.2, 20]} />
           <meshStandardMaterial color="#3a3d46" metalness={0.6} roughness={0.4} />
         </mesh>
-        <mesh ref={flame} position={[0, -2.2, 0]} rotation={[Math.PI, 0, 0]} visible={false}>
-          <coneGeometry args={[0.85, 5, 16, 1, true]} />
-          <meshBasicMaterial color="#ffb347" transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} />
+        {/* === REALISTIC FIRE ENGINE === */}
+        {/* outermost: wide orange/amber plume */}
+        <mesh ref={flame} position={[0, -2.8, 0]} rotation={[Math.PI, 0, 0]} visible={false}>
+          <coneGeometry args={[0.95, 6.5, 20, 1, true]} />
+          <meshBasicMaterial color="#ff7020" transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
         </mesh>
-        <sprite ref={glow} position={[0, -1.5, 0]} scale={14}>
-          <spriteMaterial map={softDot()} color="#ffb25e" transparent opacity={0} depthWrite={false} blending={THREE.AdditiveBlending} />
+        {/* middle: bright yellow-white hot core */}
+        <mesh ref={flameInner} position={[0, -2.5, 0]} rotation={[Math.PI, 0, 0]} visible={false}>
+          <coneGeometry args={[0.52, 4.8, 16, 1, true]} />
+          <meshBasicMaterial color="#fff4c0" transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+        </mesh>
+        {/* innermost: deep blue combustion tip (at nozzle exit) */}
+        <mesh ref={flameTip} position={[0, -1.6, 0]} rotation={[Math.PI, 0, 0]} visible={false}>
+          <coneGeometry args={[0.26, 1.4, 12, 1, true]} />
+          <meshBasicMaterial color="#aad4ff" transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+        </mesh>
+        {/* large diffuse glow sprite at nozzle */}
+        <sprite ref={glow} position={[0, -2.0, 0]} scale={16}>
+          <spriteMaterial map={softDot()} color="#ff8828" transparent opacity={0} depthWrite={false} blending={THREE.AdditiveBlending} />
         </sprite>
+        {/* extra-wide heat haze bloom */}
+        <sprite ref={heatHaze} position={[0, -1.5, 0]} scale={28}>
+          <spriteMaterial map={softDot()} color="#ffaa44" transparent opacity={0} depthWrite={false} blending={THREE.AdditiveBlending} />
+        </sprite>
+        {/* spark particles */}
+        {sparks.map((sp, i) => (
+          <sprite key={i} ref={(s) => (sparkRefs.current[i] = s)} scale={0.5}>
+            <spriteMaterial map={softDot()} color="#ffcc66" transparent opacity={0} depthWrite={false} blending={THREE.AdditiveBlending} />
+          </sprite>
+        ))}
       </group>
     </group>
   );

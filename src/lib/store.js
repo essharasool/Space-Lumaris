@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react';
+import { playDiscoveryChime, playRobotAction } from './sounds';
 
 // Two kinds of shared state:
 // 1. `live`  — values that change every frame (scroll progress, caption clock). Read inside
@@ -53,8 +54,21 @@ export function useStore(selector) {
   return useSyncExternalStore(subscribe, () => selector(state));
 }
 
-/** a kid tapped a robot or its beacon */
-export function discover(id) {
+/** trigger physical in-world robot animation and sound effect */
+export function triggerRobotAnimation(id) {
   live.fx[id] = performance.now() / 1000;
+  playRobotAction(id);
+  playDiscoveryChime();
+  setState((s) => ({ found: s.found[id] ? s.found : { ...s.found, [id]: true } }));
+}
+
+/** open the explorer sketchbook field notes panel */
+export function openSketchbook(id) {
   setState((s) => ({ card: id, found: s.found[id] ? s.found : { ...s.found, [id]: true } }));
+}
+
+/** a kid tapped a robot or its beacon (triggers both animation and card) */
+export function discover(id) {
+  triggerRobotAnimation(id);
+  openSketchbook(id);
 }

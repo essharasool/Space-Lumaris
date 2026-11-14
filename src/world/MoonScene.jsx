@@ -176,7 +176,51 @@ function flagTexture() {
   return t;
 }
 
-/** Apollo 12 marker: flag + the astronauts' footprints walking over to Surveyor 3 (Nov 1969) */
+/** Apollo 12 LM descent stage marker (Intrepid) */
+function LunarModuleDescent() {
+  const GOLD = '#d4af37';
+  const BRONZE = '#5c4827';
+  const SILVER = '#cfcfcf';
+  return (
+    <group position={[-2.4, 0, -1.8]} rotation={[0, Math.PI / 4, 0]}>
+      {/* Octagonal descent stage main body */}
+      <mesh position={[0, 0.65, 0]}>
+        <cylinderGeometry args={[1.3, 1.4, 0.75, 8]} />
+        <meshStandardMaterial color={GOLD} metalness={0.8} roughness={0.3} />
+      </mesh>
+      {/* Center engine bell underneath */}
+      <mesh position={[0, 0.2, 0]} rotation={[Math.PI, 0, 0]}>
+        <coneGeometry args={[0.32, 0.45, 16, 1, true]} />
+        <meshStandardMaterial color="#2d2d2d" metalness={0.7} roughness={0.4} />
+      </mesh>
+      {/* Top deck / ascent stage base ring */}
+      <mesh position={[0, 1.05, 0]}>
+        <cylinderGeometry args={[1.1, 1.1, 0.08, 16]} />
+        <meshStandardMaterial color={BRONZE} metalness={0.6} roughness={0.5} />
+      </mesh>
+      {/* 4 landing gear legs with circular footpads */}
+      {[0, 1, 2, 3].map((i) => {
+        const ang = (i * Math.PI) / 2 + Math.PI / 4;
+        const lx = Math.cos(ang) * 2.2;
+        const lz = Math.sin(ang) * 2.2;
+        const ox = Math.cos(ang) * 1.1;
+        const oz = Math.sin(ang) * 1.1;
+        return (
+          <group key={i}>
+            <Strut a={[ox, 0.7, oz]} b={[lx, 0.05, lz]} r={0.03} color={SILVER} />
+            <Strut a={[ox * 0.7, 0.3, oz * 0.7]} b={[lx, 0.05, lz]} r={0.018} color={GOLD} />
+            <mesh position={[lx, 0.04, lz]} rotation={[-Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.22, 0.24, 0.04, 16]} />
+              <meshStandardMaterial color={GOLD} metalness={0.8} roughness={0.35} />
+            </mesh>
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
+/** Apollo 12 marker: LM Intrepid descent stage + flag + footprints walking over to Surveyor 3 (Nov 1969) */
 function ApolloVisit() {
   const flag = useMemo(() => flagTexture(), []);
   const prints = useMemo(() => {
@@ -197,6 +241,7 @@ function ApolloVisit() {
   return (
     <>
       <group position={A.apollo.pos} quaternion={A.apollo.quat}>
+        <LunarModuleDescent />
         <Strut a={[0, 0, 0]} b={[0, 1.9, 0]} r={0.02} color="#d9d6cf" />
         <Strut a={[0, 1.88, 0]} b={[0.95, 1.88, 0]} r={0.012} color="#d9d6cf" />
         <mesh position={[0.48, 1.58, 0]}>
