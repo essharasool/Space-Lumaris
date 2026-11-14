@@ -54,16 +54,16 @@ The final words for all 5 files are in **`content/scripts.md`**. Only **2 files*
 
 ## Part 4: Build it with Antigravity (most of the time)
 
-- [ ] ⭐ **16.** Do prompts **A1 → A11** in `PROMPTS.md`, **one at a time, a new chat each time**. Save with git after each one works.
+- [x] ⭐ **16.** Do prompts **A1 → A11** in `PROMPTS.md`, **one at a time, a new chat each time**. Save with git after each one works.
 - [ ] ⭐ **17.** Set the karaoke timing: open the site with `?timing` at the end of the address, play each track, and tap **Space** at the start of every sentence. Copy what it prints into `narration.js` (ask Antigravity to do the pasting).
 
 ---
 
 ## Part 5: Check the facts (about 15 min)
 
-- [ ] ⭐ **18.** Search the code for `VERIFY`. For each one, check the NASA link in `.agents/rules/30-facts.md`. If you can't confirm it, **delete it**. A missing fact is better than a wrong one.
-- [ ] ⭐ **19.** Make sure the site says Oppy **held** the driving record until **Perseverance passed it on 11 October 2026** (not "still holds").
-- [ ] ⭐ **20.** Every Gemini picture has the small label **"Illustration (AI-assisted)"**.
+- [x] ⭐ **18.** Search the code for `VERIFY`. For each one, check the NASA link in `.agents/rules/30-facts.md`. If you can't confirm it, **delete it**. A missing fact is better than a wrong one.
+- [x] ⭐ **19.** Make sure the site says Oppy **held** the driving record until **Perseverance passed it on 11 October 2026** (not "still holds").
+- [x] ⭐ **20.** Every Gemini picture has the small label **"Illustration (AI-assisted)"**.
 
 ---
 
