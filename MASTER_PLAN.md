@@ -1,164 +1,202 @@
-# 🚀 MASTER PLAN: *Echoes in the Dust: The Cosmic Relay Race*
-**NASA Space Apps Challenge 2026**  
-**Challenge:** *Abandoned but Not Forgotten: Storytelling about NASA's Discarded Equipment on the Moon and Mars*  
-**Format:** Immersive 3D Web Scrollytelling + Orbital Globe Explorer + 3D Hardware Inspector  
-**Target Audience:** School-Age Kids (Ages 7–14), Space Enthusiasts, Educators, and NASA Judges  
-**Core Technologies:** React + Vite + Tailwind CSS + Three.js / React Three Fiber + GSAP / Framer Motion  
+# MASTER PLAN v2 — *Echoes in the Dust: The Cosmic Relay Race*
+
+**NASA Space Apps Challenge 2026** · Challenge: *Abandoned but Not Forgotten*
+**Deadline:** Sunday 15 Nov 2026, 11:59 PM local time. Aim to submit by **8 PM**.
+**Audience:** ages 7–14. Simple story on top, "Secret Science Files" underneath.
+**Builder:** Antigravity with Gemini Flash, so the plan keeps every task small and cheap.
+**Host:** Vercel.
+
+> v1 (the Antigravity plan) is in git history. v2 keeps her story, fixes facts that were wrong, cuts what can't be built well in about 1.5 days, and adds a few ideas that cost little and stand out.
 
 ---
 
-## 1. Executive Summary & Challenge Alignment
+## 0. Rule check against the official challenge
 
-### 1.1 The Challenge Core
-Decades of space exploration have left iconic robots and landers resting silently in the lunar regolith and Martian dust. While contemporary news highlights active rovers and the Artemis program, these pioneering machines laid the scientific and engineering foundation for interplanetary travel.
-
-### 1.2 Our Vision: *"The Great Cosmic Relay Race"*
-Rather than a dry static catalog or list of discarded scrap, *Echoes in the Dust* frames three historic missions as teammates passing an interplanetary exploration baton across space and time:
-1. **Act I: Surveyor 3 (The Moon, 1967)** — *The Scout Who Tested the Dust* (Proved soft lunar soil could support landers; visited by Apollo 12).
-2. **Act II: Sojourner (Mars, 1997)** — *The Bouncy Pioneer* (Bounced on airbags; proved mobile wheels and autonomous navigation on another world).
-3. **Act III: Opportunity / "Oppy" (Mars, 2004–2018)** — *The Grand Marathon Runner* (45.16 km marathon; discovered ancient water; 15-year testament to engineering endurance).
-4. **Epilogue: The Torch Passes to YOU** — The astronaut visor lifts, challenging the next generation standing at their bedroom windows to pick up the next relay leg.
-
-### 1.3 Key Hackathon Criteria Met
-* **NASA NSSDCA Data Integration:** Real launch masses, landing coordinates, and scientific instruments woven organically into narratives.
-* **The "Engineer-to-Product" Emotional Bond:** Highlighting the human teams behind the hardware (Hughes Aircraft, Donna Shirley's JPL team, Steve Squyres and scientists living on "Mars time").
-* **Multi-Tiered Presentation:** Kid-friendly poetic narration + technical "NASA Secret Science File" / "Tech-Patch" badges for judges and enthusiasts.
+| Requirement (source) | v1 | v2 |
+|---|---|---|
+| Tell the story of NASA hardware left on the Moon/Mars for school-age kids ("some or all") | ✅ 3 robots | ✅ Keep 3. Optional bonus: a "Ghost Robot Map" with the other items from the Resources tab |
+| Show *how missions operated*, not lists of facts | ⚠️ Heavy on spec tables | ✅ Each act has one hands-on interaction that shows how the hardware worked |
+| Link engineering to science | ✅ | ✅ Every act ends with a "Because of this part → we learned this" card |
+| **Accuracy is important** | ❌ Several wrong or outdated facts (see §6) | ✅ Facts live in one checked data file, each with a source link |
+| Use NASA data (judges look for it) | ⚠️ Mentioned, not linked | ✅ NSSDCA + Photojournal links in every Science File; credits page |
+| Demo: **≤30 s video OR ≤7 slides**, public link, English | ❌ Missing | ✅ §8 |
+| **Under-18 rule:** no recognisable name, voice or face of kids in the submission or demo | ⚠️ Not addressed | ✅ The voice is AI. The child character is always seen from behind or in a helmet. No real names or photos of the team |
+| Space Apps branding, **not** the NASA logo. No NASA logo next to AI images | ❌ Not addressed | ✅ Rule in the Antigravity rules file |
+| Rights to everything used | ⚠️ | ✅ Only NASA images (public domain), our own AI art, and OFL fonts. Credits page |
 
 ---
 
-## 2. Interactive Navigation: Scrollytelling + 3D Orbital Globe
+## 1. The story (her idea, sharpened)
 
-Based on project requirements, navigation blends **Continuous Scrollytelling** with an **Interactive 3D Planet Viewer**:
+**The Great Cosmic Relay Race.** Each robot ran one leg and handed the baton on.
 
-```mermaid
-flowchart TD
-    A["Intro: Bedroom Window (intro.mp3)"] -->|"Click 'Engage Helmet HUD'"| B["Orbital Starfield Transition"]
-    B --> C["Interactive 3D Moon Globe (Orbit & Coordinates)"]
-    C -->|"Zoom to Surface"| D["Act I: Surveyor 3 Surface Scene (3D Model / Audio)"]
-    D -->|"Pass Relay Baton"| E["Interactive 3D Mars Globe (Orbit & Coordinates)"]
-    E -->|"Landing Site: Ares Vallis"| F["Act II: Sojourner Surface Scene (3D Model / Audio)"]
-    F -->|"Next Leg: Meridiani Planum"| G["Act III: Opportunity Surface Scene (3D Model / Audio)"]
-    G -->|"Planet Dust Storm Dimming"| H["Epilogue: Outro & Mission Archives (outro.mp3)"]
-```
-
-### 2.1 Two Synced Exploration Modes
-1. **Cinematic Story Mode (Scrollytelling):**
-   * As the audio tracks play, the camera smoothly guides the user from Earth into orbit, descending to the Moon, journeying to Mars, and landing at each mission coordinate.
-   * Karaoke-style telemetry text highlights line-by-line in sync with the narration.
-2. **Interactive 3D Planetary & Hardware Inspection Mode:**
-   * At any moment (or at designated checkpoints), the user can toggle the **Orbital Globe Viewer** to rotate 3D celestial bodies (Moon & Mars), inspect landing sites, and interact with **real-time 3D models** of the spacecraft.
-
----
-
-## 3. Visual Assets & 3D Model Architecture (Tri-Layer Visuals)
-
-Each mission is brought to life through three complementary visual layers:
-
-### 3.1 Layer 1: Real-Time Interactive 3D Models (.glb / .gltf / Three.js)
-* **Surveyor 3:** 3-legged triangular lander, solar panel mast, omnidirectional antenna, and articulated surface soil sampling scoop.
-* **Sojourner:** 6-wheeled micro-rover featuring its distinctive rocker-bogie suspension, APXS instrument deployed at the rear, and solar top-plate.
-* **Opportunity (Oppy):** Iconic solar-winged MER rover, panoramic camera mast (Pancam), and robotic arm (IDD) with the Rock Abrasion Tool (RAT).
-* **Interactive Controls:** Orbit, zoom, and click designated hot-spots on the 3D models to reveal component functions (e.g., clicking Oppy's wheels explains Martian tread wear; clicking the scoop explains lunar regolith testing).
-
-### 3.2 Layer 2: Custom Digital Artwork & Illustrations
-* Dedicated slots and parallax canvas layers for custom digital art, character artwork (the child explorer), and stylized planetary landscapes.
-* Stylized 2.5D visual dioramas separating foreground rocks, midground rovers, and deep-space nebulae.
-
-### 3.3 Layer 3: Official NASA Archival Imagery & Blueprints
-* High-resolution official NASA / JPL archival photos:
-  * **Surveyor 3:** `PIA00358` (Surveyor 3 on the Moon) and Apollo 12 astronaut Pete Conrad examining the lander (`AS12-48-7133`).
-  * **Sojourner:** `PIA01122` (Sojourner analyzing rock "Yogi") and airbag deflation views.
-  * **Opportunity:** `PIA22359` (Selfie / tracks across Endeavour Crater) and microscopic images of hematite spherules ("blueberries").
-* **X-Ray / Blueprint Mode:** Neon glowing wireframe overlays that reveal internal schematics when scanned with the custom cursor.
-
----
-
-## 4. Audio Pipeline & Scene Breakdown
-
-All five existing voiceover tracks from `asset/audio/` are mapped 1-to-1:
-
-| Track # | Audio File Path | Scene / Stage | Interactive & Visual Actions |
+| Leg | Robot | What the baton *is* | Hands-on moment (shows how it worked) |
 |---|---|---|---|
-| **01** | `asset/audio/intro.mp3` | **Prologue: Bedroom Window** | Dark cozy bedroom; frosted window; child gazing at stars. Glowing prompt: "ENGAGE HELMET HUD". Triggers Three.js starfield warp. |
-| **02** | `asset/audio/surveyor (2nd part).mp3` | **Act I: Moon (Oceanus Procellarum)** | 3D Moon globe rotates to coordinates (3.01° S, 23.42° W). Surface descent reveals Surveyor 3. Interactive scoop inspection and Apollo 12 visit lore. |
-| **03** | `asset/audio/sojourner (3rd part).mp3` | **Act II: Mars (Ares Vallis)** | Interplanetary transit to Mars (19.33° N, 33.55° W). Airbag bounce animation. 3D micro-rover model, rocker-bogie test, and Donna Shirley JPL team story. |
-| **04** | `asset/audio/oppy (4th part).mp3` | **Act III: Mars (Meridiani Planum)** | Traverse across Martian ridge (1.95° S, 354.47° E). 45.16 km odometer tracker. 3D Oppy model; dust storm simulation dims solar energy readout. |
-| **05** | `asset/audio/outro.mp3` | **Epilogue: The Cosmic Relay** | Astronaut visor lifts; orbital relay lines connect Moon & Mars to Earth. Mission control archive open for exploration; replay triggers. |
+| Prologue | — (kid at the window, back to camera) | A question: *"Could the ground out there hold us up?"* | Tap **ENGAGE HELMET** (this also unlocks audio, which browsers require) |
+| 1 · Moon 1967 | **Surveyor 3** | *"Yes, the ground is solid."* | **Dig a trench** (matches the narration): drag the scoop into the soil, a trench appears and a meter says "firm: safe to land". Then a **"Then vs. Now" slider** compares Surveyor alone in 1967 with Apollo 12 astronauts beside it in 1969 |
+| 2 · Mars 1997 | **Sojourner** | *"Yes, a robot can drive on Mars."* | **Bounce landing:** the airbag ball bounces, then deflates. **Size ruler:** drag Sojourner next to a kid silhouette and a microwave |
+| 3 · Mars 2004–2018 | **Opportunity** | *"Yes, water once soaked Mars."* | **RAT grind** reveals hematite "blueberries". **Odometer** rolls up to 45.16 km as you scroll. **Dust storm:** a slider fills the sky with dust and the solar-power bar drains, which is how Oppy went to sleep |
+| Epilogue | **You** | *The baton is still moving.* | **New in 2026:** Perseverance passed Oppy's driving record on **11 Oct 2026**. The relay is real and still going. The last baton goes to the reader: a "Mission Patch" with a name they type in (stays on their device) |
 
-### Audio Dock Features
-* Persistent glassmorphism control dock at bottom of screen.
-* Play/Pause, timeline scrubber, track switcher, volume control, and mute.
-* Telemetry readout displaying current track timecode, audio frequency bars, and synchronized karaoke subtitles.
+**Why the epilogue works:** v1 said Oppy "holds the world record". That stopped being true on 11 Oct 2026. Instead of hiding that, the site makes it the ending: Oppy literally passed the baton. Judges will notice the up-to-date research. The outro script doesn't mention the record, so no audio change is needed; the Perseverance update is on-screen text only. **Script fixes are in `TODO.md`** (Oppy's "last message" line is a myth and must change).
+
+**"Ghost Robot Map" (stretch goal, only if time is left Sunday):** a flat 2D map of the Moon and Mars with faint dots for the other hardware on the Resources tab (Apollo descent stages, the 3 Moon buggies, Viking 1 & 2, Spirit, Phoenix, InSight, Ingenuity). Each dot gives one line: what it is, the year, and its status, linked to NSSDCA. No audio needed.
 
 ---
 
-## 5. System & Component Architecture
+## 2. Themes: "Pick your Explorer Suit" (instead of light/dark)
+
+She picked both ideas, so they're combined:
+- **The planet sets the scene colours automatically** (bedroom → Moon grey → Mars rust) as you scroll.
+- **The visitor picks a Suit** that sets the UI personality: accent colour, button shape, and how things move. Names are gender-neutral so every kid feels invited, while the looks still lean "sparkly" or "mechanical".
+
+| Suit | Feel | Palette (accent on deep space) | Motion personality |
+|---|---|---|---|
+| **Stardust** | soft, dreamy, sparkly | blush `#F4A7B9`, lilac `#B9A3E3`, peach `#FFD3B0` on plum-night `#1B1430` | springy, with a small sparkle burst on tap |
+| **Rocketeer** | bold, mechanical | safety orange `#FF6B1A`, signal yellow `#FFC83D`, steel `#9BA8B5` on gunmetal `#12161C` | snappy, with a "clunk" press and hazard stripes on hover |
+| **Daylight** (the light mode) | paper storybook, best for classrooms and projectors | ink `#1E2A3A`, brick `#C0462B`, sky `#3D7BC4` on cream `#F6F0E4` | gentle fades |
+
+- First visit uses Daylight or Stardust based on the device's light/dark setting. The choice is saved in `localStorage`.
+- How it's built: `<html data-suit="stardust">` plus CSS variables. Each suit is one small CSS block, with no JavaScript re-render.
+- All 3 suits must pass WCAG AA contrast for body text.
+
+---
+
+## 3. Visual system (no AI slop)
+
+**Typography (free, self-hosted with Fontsource, no Google Fonts request):**
+| Role | Font | Why |
+|---|---|---|
+| Story titles | **Fraunces** (variable; soft/wonky axes) | Picture-book warmth, not the usual tech-startup look |
+| Body and captions | **Atkinson Hyperlegible Next** (variable) | Designed by the Braille Institute for legibility. Ideal for kids and dyslexic readers |
+| Telemetry, numbers, HUD | **Atkinson Hyperlegible Mono** | Matches the body font, with clear numbers |
+
+Fluid type scale (use `clamp`): body **18→20 px**, line-height 1.6, max width 60 characters. H1 **44→96 px**, H2 32→56, H3 24→32. HUD labels 12–14 px uppercase with +0.08em letter spacing. Nothing a kid has to read goes below 16 px.
+
+**Art direction: "museum diorama meets picture book."**
+- Real NASA photos are the hero images of each robot. Accuracy wins.
+- Gemini art is used for scenes and mood only: the bedroom, the child seen from behind, sky backdrops, paper-cut foreground rocks. **Never** use AI art for close-ups of the robots, because AI gets their shape wrong. Every AI image gets a small label: "Illustration (AI-assisted)".
+- One consistent art style. Prompts are in `PROMPTS.md` §B.
+- Blueprint mode: thin white line drawings with numbered call-outs (like a museum label), instead of neon glow.
+
+**Banned (these are what make a site look AI-made):** purple-to-blue gradients, gradient text, glassmorphism everywhere (allowed once: the audio dock), glowing neon borders, emoji used as icons, a grid of 3 cards with icons, a centred hero with "Unlock the…", fake HUD numbers (no oxygen meter; the HUD shows **real** data: coordinates, date, sol count, distance), stock phrases ("testament", "delve", "embark", "tapestry", "journey"), and Inter, Space Grotesk or Poppins.
+
+**What it does instead:** asymmetric layouts, big real photos with museum-style captions (photo ID + credit), hand-made details like ticket-stub cards and mission stamps, real numbers set in mono type, and lots of empty space.
+
+---
+
+## 4. Tech stack (small, fast, and easy for Gemini Flash)
+
+| Need | Choice | Not used, and why |
+|---|---|---|
+| App | **Vite + React (plain JavaScript)** | Next.js and TypeScript add files and errors Flash has to fight |
+| Styling | **Tailwind CSS v4** (`@tailwindcss/vite`) + CSS variables for suits | — |
+| Smooth scroll | **Lenis** (MIT, tiny), run by GSAP's clock. Native scrolling on touch screens and for reduced-motion users | GSAP ScrollSmoother needs wrapper divs and breaks `position: fixed` |
+| All animation | **GSAP** + ScrollTrigger + SplitText + `@gsap/react` (all free since Webflow made GSAP free) | Framer Motion too. Two animation libraries means double the tokens and the bundle |
+| 3D (one place only) | **three + @react-three/fiber + @react-three/drei**, lazy-loaded | 3D on every scene would lag phones |
+| Audio | Native `<audio>` + a small `useNarration` hook | Howler isn't needed |
+| Fonts | `@fontsource-variable/fraunces`, `@fontsource-variable/atkinson-hyperlegible-next`, `@fontsource/atkinson-hyperlegible-mono` | — |
+| Icons | `lucide-react`, only for audio and player controls | Emoji |
+| Deploy | Vercel (connect the GitHub repo) | — |
+
+**3D: "a little 3D + some real models" (her choice):**
+1. **Orbit globe:** one sphere with the free NASA CGI Moon Kit texture, which then swaps to a Mars texture (NASA 3D Resources). Pins at the landing sites. Used between acts as the "travel" moment. Textures at 2K max, WebP.
+2. **Opportunity 3D model** from NASA 3D Resources (free, no copyright). It must be compressed to **under 3 MB** at gltf.report, and it only loads when the visitor opens "Inspect Oppy".
+3. **No free NASA 3D model was found for Sojourner or Surveyor 3.** They get real photos plus clickable blueprint hotspots, which also look more unique.
+
+**Performance budget (no lag):**
+- First load under 250 KB gzipped JS. The 3D code is split out with `React.lazy`.
+- Canvas: `dpr={[1, 1.5]}`, `frameloop="demand"`, stops rendering when off-screen. One Canvas only.
+- Images: WebP/AVIF, 1600 px wide max, `loading="lazy"`, width and height set.
+- Animate only `transform` and `opacity`. Never animate `filter: blur` or `box-shadow` on scroll.
+- `prefers-reduced-motion`: turns off parallax and bounces and shows simple fades.
+- Touch devices: no custom cursor. The X-ray scanner becomes "drag your finger to scan".
+
+**Responsive:** mobile 360–767 (single column, dock collapses to a play button + progress line), tablet 768–1199 (photo and text stack, side-by-side in landscape), desktop 1200+ (asymmetric two-column scenes, globe pinned while text scrolls). Test at 360, 768, 1024 and 1440.
+
+**Micro-interactions (each one small and each one meaningful):**
+- Buttons press down 2 px, with a suit-specific effect (sparkle or clunk).
+- Science File cards flip like a ticket stub, and a "STAMPED ✓" mark lands when opened.
+- The relay-track progress bar at the top runs Earth → Moon → Mars, and a baton slides along it as you scroll.
+- Karaoke text: each line brightens as it's spoken, and past lines dim.
+- Numbers count up (45.16 km, 83 days, 14+ years) when they scroll into view.
+- Hotspot dots pulse once, not forever.
+
+---
+
+## 5. Files and folders (keep it small)
 
 ```text
-nasa-echoes-in-the-dust/
-├── public/
-│   ├── audio/
-│   │   ├── intro.mp3
-│   │   ├── surveyor (2nd part).mp3
-│   │   ├── sojourner (3rd part).mp3
-│   │   ├── oppy (4th part).mp3
-│   │   └── outro.mp3
-│   ├── models/                  # 3D GLTF/GLB models
-│   │   ├── surveyor3.glb
-│   │   ├── sojourner.glb
-│   │   ├── opportunity.glb
-│   │   ├── moon.glb
-│   │   └── mars.glb
-│   └── images/
-│       ├── nasa-archive/        # Official JPL / NSSDCA images
-│       └── custom-art/          # Custom digital artwork & backgrounds
-├── src/
-│   ├── components/
-│   │   ├── 3d/
-│   │   │   ├── PlanetaryGlobe.jsx  # Interactive 3D Moon & Mars Globe
-│   │   │   ├── HardwareViewer.jsx  # Interactive 3D Rover/Lander Inspector
-│   │   │   └── SpaceAtmosphere.jsx # Three.js particle starfield & dust
-│   │   ├── hud/
-│   │   │   ├── HelmetVisor.jsx     # Glassmorphism visor frame & telemetry
-│   │   │   ├── ScannerCursor.jsx   # X-Ray blueprint spotlight mask
-│   │   │   └── TelemetryBadges.jsx # Live coordinates, oxygen, battery HUD
-│   │   ├── player/
-│   │   │   ├── AudioDock.jsx       # Floating retro-futuristic controller
-│   │   │   └── KaraokeSubtitles.jsx# Synced narration subtitles
-│   │   ├── scenes/
-│   │   │   ├── WindowScene.jsx     # Prologue bedroom scene
-│   │   │   ├── MissionScene.jsx    # Dynamic template for Surveyor, Sojourner, Oppy
-│   │   │   └── OutroScene.jsx      # Final relay summary & mission logs
-│   │   └── modals/
-│   │       └── TechPatchModal.jsx  # Dual view: 3D Model <-> Art <-> NASA Archive
-│   ├── data/
-│   │   └── missionsData.js         # Specs, NSSDCA facts, quotes, coordinates
-│   ├── hooks/
-│   │   └── useAudioSync.js         # Audio timeline and sync hook
-│   ├── App.jsx
-│   ├── index.css
-│   └── main.jsx
-├── package.json
-└── vite.config.js
+public/
+  audio/ 01-intro.mp3  02-surveyor.mp3  03-sojourner.mp3  04-oppy.mp3  05-outro.mp3   # renamed: no spaces
+  img/nasa/   (real NASA photos, named by ID: PIA01122.webp …)
+  img/art/    (Gemini art, webp)
+  models/opportunity.glb   textures/moon_2k.webp  mars_2k.webp
+src/
+  data/missions.js      # ALL facts, numbers, captions, sources: the only place facts live
+  data/narration.js     # her scripts, split into lines + start times (seconds)
+  hooks/useNarration.js # plays audio, tells which line is active
+  components/  SuitPicker  AudioDock  Karaoke  RelayTrack  ScienceFile  Hotspot  ThenNow  CountUp
+  scenes/      Prologue  ActScene (one template for all 3 acts)  Globe3D (lazy)  Epilogue  Credits
+  styles/index.css      # Tailwind + suit variables + type scale
+  App.jsx  main.jsx
 ```
 
----
-
-## 6. Official NSSDCA Science & Human Connection Matrix
-
-| Mission | Location & Date | Key Engineering Specs (NSSDCA) | The Human Connection |
-|---|---|---|---|
-| **Surveyor 3** | Moon (*Oceanus Procellarum*)<br>April 20, 1967 | Launch: 1,026 kg; Landing: 296 kg.<br>Electric soil scoop with strain gauge.<br>Television camera transmitted 6,315 pictures. | Hughes Aircraft engineers held their breath as the scoop scraped lunar soil to disprove quicksand theories. Visited in Nov 1969 by Apollo 12 astronauts Conrad and Bean—the only probe visited by humans off-world. |
-| **Sojourner** | Mars (*Ares Vallis*)<br>July 4, 1997 | 11.5 kg micro-rover, 13W solar peak.<br>6-wheel Rocker-Bogie mobility.<br>Alpha Particle X-Ray Spectrometer (APXS). | Led by Donna Shirley and a scrappy JPL team battling naysayers; engineers felt every bump over rocks like a human heartbeat. Proved micro-rovers can operate on Mars. |
-| **Opportunity (Oppy)** | Mars (*Meridiani Planum*)<br>January 25, 2004 | 185 kg, Rock Abrasion Tool (RAT), Mini-TES.<br>Designed for 90 days / 1,000 meters;<br>Achieved 15 years / 45.16 km marathon. | Steve Squyres and flight operators lived on "Mars time" (sliding sleep by 40 minutes every day). Team mourned Oppy after the 2018 global dust storm like a faithful companion. |
+**Karaoke timing trick (no AI tokens):** a hidden `?timing` mode. Play a track, tap the space bar at the start of each line, and it prints the times as JSON. Paste that into `narration.js`. Takes about 10 minutes for all 5 tracks.
 
 ---
 
-## 7. Review & Verification Checklist Before Code Execution
+## 6. Fact check (corrections to v1)
 
-- [x] All 5 audio files accounted for without any re-recording.
-- [x] Dual exploration mode defined: Scrollytelling + 3D Orbital Globe.
-- [x] Visual pipeline confirmed: 3D interactive models + custom artwork slots + NASA archival imagery + blueprint wireframes.
-- [x] NSSDCA facts and emotional human bonds articulated for judges.
-- [ ] User review and approval of the master blueprint.
-- [ ] Ready signal to scaffold Vite + React + Three.js project.
+Sources: NSSDCA, NASA/JPL, Photojournal (links in `.agents/rules/30-facts.md`).
+
+| v1 said | Correct / safer wording | Status |
+|---|---|---|
+| Oppy "holds the world record" | Held it from 2014–15 until **Perseverance passed it on 11 Oct 2026** (45.22 km vs Oppy's 45.16 km) | ❌ fixed |
+| Oppy found "lakes and oceans" | Found minerals like **hematite "blueberries"** that form in water, showing **liquid water once soaked the ground** | ❌ fixed |
+| Sojourner "proved ancient water flowed" | Don't claim this. Sojourner's job: prove a rover can drive and study rocks (APXS) on Mars | ❌ fixed |
+| Sojourner 11.5 kg | **10.5 kg** (NSSDCA). JPL says 10.6 kg, so write "about 10.5 kg (23 lb)" | ❌ fixed |
+| Sojourner "first wheels on another world" | **First rover on Mars.** (The Soviet Lunokhod 1 drove on the Moon in 1970.) | ⚠️ wording |
+| Sojourner lasted… | Planned 7 days, worked **83 days** | ✅ |
+| Pathfinder site 19.33 N, 33.55 W | ✅ matches NSSDCA (early reports said 19.13 N, 33.22 W) | ✅ |
+| Surveyor 3 landing mass 296 kg | Sources say 296 or 302 kg, so write "**about 300 kg**". Launch 1,026 kg ✅ | ⚠️ wording |
+| Surveyor 3 site 3.01 S, 23.42 W | ✅ (NASA: ~3° S, 23.41° W) | ✅ |
+| Image `PIA00358` (Surveyor 3) | **Not found.** Pick a verified Surveyor 3 photo from the Apollo 12 set | ❌ replace |
+| `AS12-48-7133` "Conrad examining the camera" | Two NASA captions disagree on this frame. **Open the image and check** before writing the caption | ⚠️ check |
+| `PIA22359` (Oppy selfie) | **Not found.** Use **PIA22929** (Oppy's last image, sol 5,111, 10 June 2018), **PIA22930** (last images as the dust storm darkened the sky), **PIA22908** (final 360° panorama) | ❌ replace |
+| Oppy 45.16 km, 90-sol plan, ~15 years, landed 25 Jan 2004 at 1.95 S, 354.47 E | ✅. Last contact **10 June 2018**, mission declared over **13 Feb 2019** | ✅ |
+| "6,315 pictures", "13 W solar", "185 kg", "designed for 1,000 m" | Not verified yet. Check NSSDCA before using, or leave out | ⚠️ verify |
+| Engineer stories (Donna Shirley, Squyres, "Mars time") | Fine as storytelling. **No made-up quotes.** Teams shifted their day ~40 min daily because a Mars day (sol) is ~24 h 40 min | ✅ wording |
+
+---
+
+## 7. 1.5-day build schedule
+
+| When | Do | Done when |
+|---|---|---|
+| **Sat (today) – 1 h** | Install Node, set up the project, rules files, fonts, suits | Site runs locally, suit switcher works |
+| **Sat – 3 h** | Prologue + ActScene template + audio dock + karaoke | One full act plays with synced text |
+| **Sat – 2 h** | Gemini art (§B in PROMPTS.md), download NASA photos, compress | All images in `public/img` |
+| **Sat night – 2 h** | Fill all 3 acts from `missions.js`, add one interaction per act | Whole story plays start to finish |
+| **Sun AM – 2 h** | Globe3D (lazy), Opportunity model, Epilogue, Credits | — |
+| **Sun midday – 2 h** | Mobile/tablet pass, reduced motion, Lighthouse check, deploy to Vercel | Lighthouse Performance ≥ 85 on mobile |
+| **Sun PM – 1.5 h** | 30-sec demo video + Space Apps project page | Submitted by **8 PM** |
+| Spare time | Ghost Robot Map, quiz/badge | — |
+
+**Cut list if behind (cut in this order):** Opportunity 3D model → globe (use a flat image pan instead) → Then/Now slider → suit sparkle effects. **Never cut:** audio + karaoke, real photos, Science Files, mobile layout.
+
+---
+
+## 8. Submission checklist (official Space Apps guide)
+
+- [ ] Project page in **English**: title, short description, how NASA data was used, list of tools, and an **AI-use note** (AI voice narration, Gemini illustrations, AI coding assistant)
+- [ ] **Demo:** a **≤30-second** screen recording of the site (the AI narration is fine; no kid's face, voice or name), on YouTube as *Unlisted* (opens without sign-in). Alternative: ≤7 slides as a public Google Slides link
+- [ ] **Final project link:** the Vercel URL + public GitHub repo
+- [ ] Open every link in a private/incognito window to confirm it's public
+- [ ] Space Apps logo only, no NASA meatball. Credits page lists every NASA image ID
+- [ ] Submitted well before 11:59 PM local time
+
+---
+
+## 9. Ideas for later (after the hackathon)
+Ghost Robot Map, a 3-question quiz that unlocks the Mission Patch, a printable colouring page of each robot (from the blueprint SVGs), a translated narration, and a "send a command to Mars" button that makes you wait (sped-up) for the radio delay.
