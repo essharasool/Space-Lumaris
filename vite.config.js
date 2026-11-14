@@ -10,4 +10,6 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  // the 3D world is one lazy-loaded chunk (three.js + R3F, ~290 kB gzip) that loads after first paint
+  build: { chunkSizeWarningLimit: 1200 },
 })

@@ -1,52 +1,43 @@
-import { useNarration } from './hooks/useNarration';
-import { missions } from './data/missions';
+import { lazy, Suspense, useEffect } from 'react';
+import { initNarrator } from './lib/narrator';
+import Gate from './ui/Gate';
+import Captions from './ui/Captions';
+import KineticTitles from './ui/KineticTitles';
+import RelayTrack from './ui/RelayTrack';
+import Dock from './ui/Dock';
+import Sketchbook from './ui/Sketchbook';
+import SourcesDrawer from './ui/SourcesDrawer';
+import BadgeMaker from './ui/BadgeMaker';
+import WorldBoundary from './ui/WorldBoundary';
 
-import RelayTrack from './components/RelayTrack';
-import AudioDock from './components/AudioDock';
-import SuitPicker from './components/SuitPicker';
+// the whole 3D world loads as its own chunk so the first screen paints fast
+const World = lazy(() => import('./world/World'));
 
-import Prologue from './scenes/Prologue';
-import ActScene from './scenes/ActScene';
-import Epilogue from './scenes/Epilogue';
-import Credits from './scenes/Credits';
+// how tall the invisible scroll track is (the story is ~160 s of narration)
+const STORY_HEIGHT = '1800vh';
 
 export default function App() {
-  const narration = useNarration();
-
+  useEffect(() => initNarrator(), []);
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--ink)] selection:bg-[var(--accent)] selection:text-[var(--bg)] transition-colors duration-250">
-      {/* Fixed Relay Progress Track at the very top */}
-      <RelayTrack />
-
-      {/* Floating Suit Picker in top corner */}
-      <aside className="fixed top-14 right-4 z-40 hidden sm:block">
-        <SuitPicker />
-      </aside>
-
-      {/* Main Story Flow */}
-      <main>
-        {/* Prologue: The Bedroom Window */}
-        <Prologue narration={narration} />
-
-        {/* Dynamic 3 Mission Acts rendered from verified missions.js */}
-        {missions.map((mission, index) => (
-          <ActScene
-            key={mission.id}
-            mission={mission}
-            narration={narration}
-            actIndex={index + 1}
-          />
-        ))}
-
-        {/* Epilogue: The Baton is Yours */}
-        <Epilogue narration={narration} />
+    <>
+      <div className="world" aria-hidden="true">
+        <WorldBoundary>
+          <Suspense fallback={<div className="world-fallback" />}>
+            <World />
+          </Suspense>
+        </WorldBoundary>
+      </div>
+      <div className="scroll-track" style={{ height: STORY_HEIGHT }} aria-hidden="true" />
+      <main className="overlay">
+        <Gate />
+        <KineticTitles />
+        <Captions />
+        <Sketchbook />
       </main>
-
-      {/* Bottom Sticky Glassmorphic Audio Dock */}
-      <AudioDock narration={narration} />
-
-      {/* Credits & Official Space Apps Disclosures */}
-      <Credits />
-    </div>
+      <RelayTrack />
+      <Dock />
+      <SourcesDrawer />
+      <BadgeMaker />
+    </>
   );
 }
