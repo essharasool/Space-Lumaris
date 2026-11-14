@@ -9,10 +9,10 @@ Tick each box `[x]` when it's done. Do them **from top to bottom**.
 
 The final words for all 5 files are in **`content/scripts.md`**. Only **2 files** need re-making. Don't patch them: copy the **whole script** for that file and make it fresh, in the **same voice** as the others. Then delete the old mp3.
 
-- [ ] ⭐ **1. Re-make `04-oppy.mp3`** from the full script in `content/scripts.md`.
+- [x] ⭐ **1. Re-make `04-oppy.mp3`** from the full script in `content/scripts.md`.
   Why: Oppy never really *said* "My battery is low and it's getting dark." Its last message was just **numbers** (robot data). A reporter turned those numbers into that sentence. The new script tells the true (and still sad) version.
 
-- [ ] ⭐ **2. Re-make `02-surveyor.mp3`** from the full script in `content/scripts.md`.
+- [x] ⭐ **2. Re-make `02-surveyor.mp3`** from the full script in `content/scripts.md`.
   Why: the astronauts came **two and a half** years later (April 1967 → November 1969), and Surveyor 3 was **one of** the first seeds (Surveyor 1 landed first, in 1966).
 
 - [x] **3.** `01`, `03` and `05` stay exactly as they are. Don't re-make them.
@@ -25,14 +25,14 @@ The final words for all 5 files are in **`content/scripts.md`**. Only **2 files*
 
 ## Part 2: Get the project ready (with your brother, about 20 min)
 
-- [ ] ⭐ **5.** Install **Node.js** (the "LTS" button on nodejs.org).
+- [x] ⭐ **5.** Install **Node.js** (the "LTS" button on nodejs.org).
 - [ ] ⭐ **6.** Save your work with git **before** making the project:
   `git add -A` then `git commit -m "plan and scripts"`
-- [ ] ⭐ **7.** Run the setup commands in `PROMPTS.md` → **A0**.
+- [x] ⭐ **7.** Run the setup commands in `PROMPTS.md` → **A0**.
   ⚠️ If it asks *"Current directory is not empty"*, pick **"Ignore files and continue"**. **Never** pick "Remove existing files"!
-- [ ] ⭐ **8.** Put the audio files in `public/audio/` and rename them:
+- [x] ⭐ **8.** Put the audio files in `public/audio/` and rename them:
   `01-intro.mp3` · `02-surveyor.mp3` · `03-sojourner.mp3` · `04-oppy.mp3` · `05-outro.mp3`
-- [ ] ⭐ **9.** In Antigravity, turn the 4 rule files in `.agents/rules/` to **Always On**.
+- [x] ⭐ **9.** In Antigravity, turn the 4 rule files in `.agents/rules/` to **Always On**.
 
 ---
 
