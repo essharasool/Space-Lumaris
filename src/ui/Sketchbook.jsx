@@ -4,7 +4,6 @@ import { useGSAP } from '@gsap/react';
 import { X } from 'lucide-react';
 import { missions, story } from '../data/missions';
 import { setState, useStore } from '../lib/store';
-import { lenis } from '../lib/smoothScroll';
 import { playStampSound } from '../lib/sounds';
 
 /** "Explorer Sketchbook" page — slides up from the bottom without blocking the full 3D view */
@@ -16,16 +15,6 @@ export default function Sketchbook() {
   const art = useRef();
   const closeBtn = useRef();
   const close = () => setState({ card: null });
-
-  // stop / resume Lenis when open so the panel scrolls, not the story
-  useEffect(() => {
-    if (m) {
-      lenis?.stop();
-    } else {
-      lenis?.start();
-    }
-    return () => lenis?.start();
-  }, [m]);
 
   useGSAP(
     () => {

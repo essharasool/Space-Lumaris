@@ -9,6 +9,8 @@ const _m = new THREE.Matrix4();
 const _pos = new THREE.Vector3();
 const _q = new THREE.Quaternion();
 const UP = new THREE.Vector3(0, 1, 0);
+const _look = new THREE.Quaternion();
+const _eul = new THREE.Euler();
 
 // shared mouse state — updated by DOM listener, read in useFrame
 const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
@@ -23,8 +25,8 @@ export default function CameraRig({ reduced }) {
 
   // only wire mouse on devices with a hover pointer (not touch)
   const hasHover = useMemo(() => window.matchMedia('(hover: hover)').matches, []);
-  const right = useRef(new THREE.Vector3());
-  const camUp = useRef(new THREE.Vector3());
+  const base = useRef(null);
+  if (!base.current) base.current = { pos: camera.position.clone(), quat: camera.quaternion.clone() };
 
   useEffect(() => {
     if (reduced || !hasHover) return;
@@ -53,25 +55,20 @@ export default function CameraRig({ reduced }) {
       _pos.y += Math.sin(t * 0.53) * 0.03;
     }
 
+    // ease a "base" pose toward the story beat (kept separate so mouse-look never piles up)
     const k = reduced ? 1 : damp(dt, 4.5);
-    camera.position.lerp(_pos, k);
-    camera.quaternion.slerp(_q, k);
+    base.current.pos.lerp(_pos, k);
+    base.current.quat.slerp(_q, k);
+    camera.position.copy(base.current.pos);
+    camera.quaternion.copy(base.current.quat);
 
-    // mouse-look: apply after lerp so it's on top of the story beat
+    // mouse-look: turn the head a little (yaw/pitch in camera space) on top of the story beat
     if (!reduced && hasHover) {
-      // smooth mouse target
-      mouse.x += (mouse.tx - mouse.x) * Math.min(1, dt * 3.5);
-      mouse.y += (mouse.ty - mouse.y) * Math.min(1, dt * 3.5);
-      // right + up vectors from camera's current orientation
-      right.current.set(1, 0, 0).applyQuaternion(camera.quaternion);
-      camUp.current.set(0, 1, 0).applyQuaternion(camera.quaternion);
-      // positional nudge — scale is scene-dependent, 18 units feels like looking around
-      const nudge = 18;
-      camera.position.addScaledVector(right.current, mouse.x * nudge * 0.6);
-      camera.position.addScaledVector(camUp.current, mouse.y * nudge * 0.4);
-      // also tilt the camera slightly for a rotational feel
-      camera.rotateOnAxis(right.current, -mouse.y * 0.025);
-      camera.rotateY(mouse.x * -0.025);
+      const s = Math.min(1, dt * 3.5);
+      mouse.x += (mouse.tx - mouse.x) * s;
+      mouse.y += (mouse.ty - mouse.y) * s;
+      _look.setFromEuler(_eul.set(mouse.y * 0.1, -mouse.x * 0.18, 0, 'YXZ'));
+      camera.quaternion.multiply(_look);
     }
 
     // portrait phones get a wider lens so the robots still fit

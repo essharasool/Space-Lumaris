@@ -6,7 +6,7 @@ import { PLANETS, SITE } from './path';
 import { live } from '../lib/store';
 import { fbm } from '../lib/noise';
 import { sramp } from '../lib/math';
-import { earthMap, marsMap, moonMapProc } from './textures';
+import { earthMap, marsMap } from './textures';
 import Planet from './Planet';
 import CameraRig from './CameraRig';
 import Atmosphere from './Atmosphere';
@@ -29,7 +29,7 @@ const E = {
 };
 // Moon: more variation — dark mare, bright highland, grey mid
 const Mo = { 
-  mare: C('#3a3836'),     // dark mare basin floor
+  mare: C('#46443f'),     // dark mare basin floor
   base: C('#72706b'),     // grey highland base
   bright: C('#9a9790'),   // bright crater ejecta
   rim: C('#b8b4ae'),      // crater rim highlight
@@ -60,15 +60,12 @@ function earthColor(x, z, h, c) {
 }
 function moonColor(x, z, h, c) {
   const n = fbm(x * 0.12, z * 0.12, 3, 4);
-  const n2 = fbm(x * 0.4, z * 0.4, 2, 11);
   // base colour blends mare (dark) <→ highland (grey)
-  const inMare = h < 0.4; // craters are lower — treat inner as mare-like
-  c.copy(inMare ? Mo.mare : Mo.base);
+  // crater floors are lower — fade them toward the darker tone (smooth, no hard seam)
+  c.copy(Mo.base).lerp(Mo.mare, 1 - sramp(h, 0.25, 0.5));
   c.lerp(n > 0 ? Mo.bright : Mo.mare, Math.abs(n) * 0.7);
-  // bright rim on crater edges
-  if (h > 0.5 && n2 > 0.2) c.lerp(Mo.rim, Math.min(1, (n2 - 0.2) * 2.5));
-  // darker inside craters (depth)
-  c.lerp(Mo.mare, Math.max(0, 0.4 - h) * 0.7);
+  // darker inside craters (depth), capped so it never overshoots
+  c.lerp(Mo.mare, Math.min(1, Math.max(0, 0.4 - h) * 0.7));
 }
 function marsColor(x, z, h, c) {
   const n = fbm(x * 0.1, z * 0.1, 3, 6);
@@ -120,7 +117,7 @@ function Moon() {
     map.colorSpace = THREE.SRGBColorSpace;
     map.anisotropy = 4;
   }, [map]);
-  return <Planet planet={PLANETS.moon} map={map} patchColor={moonColor} rocks={moonRocks} visibleKey="moon" glow="#aab5c4" />;
+  return <Planet planet={PLANETS.moon} map={map} patchColor={moonColor} rocks={moonRocks} visibleKey="moon" />;
 }
 
 /** with reduced motion the canvas only redraws when the story moves */

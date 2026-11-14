@@ -111,29 +111,10 @@ function planetMap(w, h, colorAt) {
 const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 const sn = (X, Y, Z, k, seed) => 0.5 * fbm(X * k + 11, Y * k + Z * 0.7 * k, 4, seed) + 0.5 * fbm(Y * k - 5, Z * k + X * 0.6 * k, 4, seed + 3);
 
-/** procedural Moon texture: grey highlands, dark maria (seas), polar shading */
-export const moonMapProc = () =>
-  once('moonProc', () =>
-    planetMap(1024, 512, (X, Y, Z, lat) => {
-      const highlands = sn(X, Y, Z, 2.6, 17) * 0.5 + 0.5;
-      const fine = sn(X, Y, Z, 11, 29) * 0.14;
-      // maria (dark lunar seas): concentrated near equator/near side
-      const lon = Math.atan2(Z, X);
-      const maria1 = Math.max(0, 1 - Math.hypot((lon + 0.5) * 2.2, lat * 3));  // Mare Tranquillitatis area
-      const maria2 = Math.max(0, 1 - Math.hypot((lon - 1.0) * 2.5, lat * 2.8)); // Mare Imbrium area
-      const maria3 = Math.max(0, 1 - Math.hypot((lon + 1.8) * 2, (lat - 0.2) * 3.2)); // Oceanus Procellarum
-      const mariaBlend = Math.min(1, (maria1 + maria2 * 0.8 + maria3 * 0.9) * 0.65);
-      let c = mix([155, 150, 145], [195, 190, 185], Math.min(1, highlands + fine));
-      c = mix(c, [52, 50, 48], mariaBlend);
-      const polar = Math.max(0, (Math.abs(lat) - 1.3) / 0.25);
-      if (polar > 0) c = mix(c, [200, 198, 195], Math.min(1, polar));
-      return c;
-    }),
-  );
-
+// 512x256 on purpose: these are painted pixel-by-pixel on the main thread at startup (cheap phones!)
 export const earthMap = () =>
   once('earth', () =>
-    planetMap(1024, 512, (X, Y, Z, lat) => {
+    planetMap(512, 256, (X, Y, Z, lat) => {
       // multi-octave noise for continents vs ocean
       const n = sn(X, Y, Z, 2.4, 31);
       const detail = sn(X, Y, Z, 6.1, 44) * 0.3;
@@ -142,12 +123,11 @@ export const earthMap = () =>
 
       // polar regions
       const absLat = Math.abs(lat);
-      const arcticIce = Math.max(0, (absLat - 1.22) / 0.22); // north pole ice
-      const antarcticIce = Math.max(0, (absLat - 1.14) / 0.26); // south pole (wider)
-      const polar = Math.max(arcticIce, antarcticIce);
+      const polar = Math.max(0, (-lat - 1.14) / 0.26); // south pole ice only
+      const north = Math.max(0, (lat - 0.95) / 0.35); // the hill patch sits at the north pole: keep it green there
 
       // land/ocean decision
-      const land = landNoise > 0.04 || polar > 0.4;
+      const land = landNoise > 0.04 || polar > 0.4 || north > 0.5;
 
       let c;
       if (!land) {
@@ -166,6 +146,7 @@ export const earthMap = () =>
       if (polar > 0) c = mix(c, [220, 230, 240], Math.min(1, polar * 2.5));
       // subtle specular highlight on poles (brightness)
       if (polar > 0.5) c = mix(c, [245, 250, 255], (polar - 0.5) * 1.4);
+      if (north > 0) c = mix(c, [58, 84, 54], Math.min(1, north));
 
       return c;
     }),
@@ -173,7 +154,7 @@ export const earthMap = () =>
 
 export const marsMap = () =>
   once('mars', () =>
-    planetMap(1024, 512, (X, Y, Z, lat) => {
+    planetMap(512, 256, (X, Y, Z, lat) => {
       const n = sn(X, Y, Z, 2.8, 51);
       const m = sn(X, Y, Z, 9, 77);
       const fine = sn(X, Y, Z, 18, 63) * 0.12;
@@ -188,9 +169,11 @@ export const marsMap = () =>
       const lon = Math.atan2(Z, X); // -pi..pi
       const valles = Math.max(0, 1 - Math.hypot((lon - (-0.52)) * 3, lat * 8));
       if (valles > 0) c = mix(c, [60, 28, 18], valles * 0.6);
-      // polar ice
-      const polar = Math.max(0, (Math.abs(lat) - 1.08) / 0.28);
+      // south polar ice; the north pole stays rust because the ground patch sits there
+      const polar = Math.max(0, (-lat - 1.08) / 0.28);
       if (polar > 0) c = mix(c, [210, 190, 170], Math.min(1, polar * 2.2));
+      const north = Math.max(0, (lat - 1.0) / 0.3);
+      if (north > 0) c = mix(c, [178, 96, 56], Math.min(1, north));
       return c;
     }),
   );

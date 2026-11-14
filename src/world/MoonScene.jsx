@@ -182,7 +182,8 @@ function LunarModuleDescent() {
   const BRONZE = '#5c4827';
   const SILVER = '#cfcfcf';
   return (
-    <group position={[-2.4, 0, -1.8]} rotation={[0, Math.PI / 4, 0]}>
+    // scale 1.6 ≈ real size next to Surveyor (descent stage ~4 m wide, legs ~9 m across)
+    <group position={[-5, 0, -4]} rotation={[0, Math.PI / 4, 0]} scale={1.6}>
       {/* Octagonal descent stage main body */}
       <mesh position={[0, 0.65, 0]}>
         <cylinderGeometry args={[1.3, 1.4, 0.75, 8]} />

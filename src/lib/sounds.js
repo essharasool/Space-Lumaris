@@ -214,11 +214,12 @@ export function playRobotAction(id) {
  * Rocket launch roar: deep low-pass noise rumble that swells.
  */
 let rocketFired = false;
-export function playRocketLaunch() {
-  if (rocketFired || isMuted) return;
-  rocketFired = true;
+export function playRocketLaunch(p) {
+  if (p < 0.15) rocketFired = false; // scrolled back before launch: arm it again
+  if (rocketFired || isMuted || p < 0.158 || p > 0.2) return;
   const c = getContext();
   if (!c || c.state === 'suspended') return;
+  rocketFired = true;
 
   const now = c.currentTime;
   const dur = 3.5;
@@ -292,8 +293,10 @@ export function updateAmbient(act, progress) {
   const c = getContext();
   if (!c || c.state === 'suspended') return;
 
-  const onMars = progress >= 0.45 && progress <= 0.88;
-  const targetVol = onMars ? 0.18 : 0;
+  // Mars runs ~0.462..0.905 (see ATMOS_KEYS in world/path.js); the dust storm peaks ~0.8..0.86
+  const onMars = progress >= 0.465 && progress <= 0.9;
+  const storm = progress > 0.768 && progress < 0.895 ? 1 : 0;
+  const targetVol = onMars ? 0.16 + storm * 0.16 : 0;
 
   if (targetVol > 0 && !windNode) {
     try {

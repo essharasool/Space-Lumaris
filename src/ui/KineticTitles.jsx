@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
+import { BookOpen, Zap } from 'lucide-react';
 import { missions, story } from '../data/missions';
 import { live, useStore, triggerRobotAnimation, openSketchbook } from '../lib/store';
 import { band, ramp, sramp } from '../lib/math';
@@ -110,7 +111,7 @@ function DiscoveryHint() {
           onClick={() => triggerRobotAnimation(m.id)}
           aria-label={`Animate ${m.title}`}
         >
-          ⚡ Animate
+          <Zap size={16} aria-hidden="true" /> Animate
         </button>
         <button
           type="button"
@@ -118,7 +119,7 @@ function DiscoveryHint() {
           onClick={() => openSketchbook(m.id)}
           aria-label={`Open ${m.title} field notes`}
         >
-          📖 Field Notes
+          <BookOpen size={16} aria-hidden="true" /> Field Notes
         </button>
       </div>
     </div>

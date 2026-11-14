@@ -130,7 +130,8 @@ export default function Planet({ planet, map, color = '#ffffff', glow, patchColo
   return (
     <group ref={group} position={planet.center}>
       <mesh>
-        <sphereGeometry args={[planet.R, 96, 64]} />
+        {/* open hole at the north pole, under the ground patch, so the smooth ball can't poke up through craters */}
+        <sphereGeometry args={[planet.R, 96, 64, 0, Math.PI * 2, Math.atan(planet.patch / planet.R), Math.PI - Math.atan(planet.patch / planet.R)]} />
         <meshStandardMaterial ref={sphereMat} map={map} color={color} roughness={1} transparent fog={false} />
       </mesh>
       <mesh geometry={patch}>

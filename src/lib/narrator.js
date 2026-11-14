@@ -246,9 +246,7 @@ function tick() {
 
   // ambient audio and sfx
   updateAmbient(ti, live.progress);
-  if (live.progress >= 0.14 && live.progress <= 0.22) {
-    playRocketLaunch();
-  }
+  playRocketLaunch(live.progress); // roars at ignition (EarthScene ignites at 0.158)
 }
 
 function onManualScroll() {

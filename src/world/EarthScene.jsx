@@ -71,7 +71,7 @@ function Rocket() {
 
     // heat-haze/bloom — wider, dimmer
     if (heatHaze.current) {
-      heatHaze.current.material.opacity = 0.22 * ignite;
+      heatHaze.current.material.opacity = 0.12 * ignite; // stacked additive glows wash the pad out to white
       heatHaze.current.scale.setScalar(28 + Math.sin(t * 11) * 2);
     }
 
@@ -93,10 +93,11 @@ function Rocket() {
     sparkRefs.current.forEach((s, i) => {
       if (!s) return;
       const sp = sparks[i];
-      const ang = i * 1.37 + t * (2 + i * 0.3);
-      s.position.set(Math.cos(ang) * sp.x, -1.8 - i * 0.15 * ignite, Math.sin(ang) * sp.z);
-      s.scale.setScalar(sp.s * 0.1 * ignite * (0.6 + Math.sin(t * 20 + i) * 0.4));
-      s.material.opacity = 0.6 * ignite * (1 - lift * 0.9);
+      // each spark falls out of the nozzle, spreads, fades, then loops
+      const life = (t * 1.6 + i * 0.137) % 1;
+      s.position.set(sp.x * life * 1.5, -2.2 - life * 7 * stretch, sp.z * life * 1.5);
+      s.scale.setScalar(sp.s * 0.1 * ignite * (1 - life * 0.6));
+      s.material.opacity = 0.7 * ignite * (1 - life);
     });
   });
 
@@ -138,11 +139,6 @@ function Rocket() {
         <mesh position={[0, 5.6, 0]}>
           <cylinderGeometry args={[1.1, 1.1, 9, 32]} />
           <meshStandardMaterial color={WHITE} roughness={0.4} metalness={0.1} />
-        </mesh>
-        {/* panel lines */}
-        <mesh position={[0, 5.6, 0]}>
-          <cylinderGeometry args={[1.12, 1.12, 9, 32, 1, true]} />
-          <meshStandardMaterial color="#c8c5be" roughness={0.6} transparent opacity={0.4} side={THREE.BackSide} />
         </mesh>
         <mesh position={[0, 3, 0]}>
           <cylinderGeometry args={[1.12, 1.12, 0.6, 32]} />

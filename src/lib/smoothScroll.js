@@ -13,8 +13,7 @@ export function initSmoothScroll() {
     lerp: 0.075,          // smoother (default 0.1 is a bit snappy)
     wheelMultiplier: 0.85, // gentler wheel sensitivity
     smoothWheel: true,
-    smoothTouch: false,    // keep native on touch (cheap + correct)
-    autoRaf: false,
+    autoRaf: false,        // touch stays native (syncTouch off)
   });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((time) => lenis.raf(time * 1000));
