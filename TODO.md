@@ -23,7 +23,7 @@ The final words for all 5 files are in **`content/scripts.md`**. Only **2 files*
 
 ---
 
-## Part 2: Get the project ready (with your brother, about 20 min)
+## Part 2: Get the project ready (with your brother, about 20 min).
 
 - [x] ⭐ **5.** Install **Node.js** (the "LTS" button on nodejs.org).
 - [ ] ⭐ **6.** Save your work with git **before** making the project:
