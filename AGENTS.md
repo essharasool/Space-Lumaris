@@ -1,4 +1,4 @@
-# AGENTS.md — Echoes in the Dust
+# AGENTS.md — Lumaris
 
 Read these before any task. They are short on purpose.
 - `.agents/rules/00-workflow.md` — how to work (token-saving, small steps)

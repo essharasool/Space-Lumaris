@@ -8,7 +8,7 @@
 
 ## 1. What it is
 
-**"Echoes in the Dust: The Cosmic Relay Race"** is now one full-screen 3D world (`100vw × 100vh`, fixed) that the camera
+**"Lumaris: The Cosmic Relay Race"** is now one full-screen 3D world (`100vw × 100vh`, fixed) that the camera
 flies through while the narrator speaks: **Earth → sky → space → Moon (Surveyor 3) → Mars (Sojourner) → Mars (Opportunity) → dust storm → starlit monuments**.
 There are no card layouts any more. Big floating type (Fraunces) and word-by-word karaoke captions sit over the 3D canvas.
 The light, fog, sky, dust and the UI accent color all change with the story.

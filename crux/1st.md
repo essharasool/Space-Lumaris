@@ -1,4 +1,4 @@
-# 🚀 Project Blueprint: *Echoes in the Dust*
+# 🚀 Project Blueprint: *Lumaris*
 **Challenge:** NASA Space Apps — *Abandoned but Not Forgotten*  
 **Format:** Interactive Zero-Gravity Web Storybook  
 **Target Audience:** School-age kids (Ages 7–12)

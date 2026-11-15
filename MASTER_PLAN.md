@@ -1,4 +1,4 @@
-# MASTER PLAN v2 — *Echoes in the Dust: The Cosmic Relay Race*
+# MASTER PLAN v2 — *Lumaris: The Cosmic Relay Race*
 
 **NASA Space Apps Challenge 2026** · Challenge: *Abandoned but Not Forgotten*
 **Deadline:** Sunday 15 Nov 2026, 11:59 PM local time. Aim to submit by **8 PM**.

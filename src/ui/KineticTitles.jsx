@@ -20,8 +20,10 @@ const TITLES = [
   { kicker: story.outro.kicker, title: story.outro.title, win: [0.9, 0.915, 0.985, 1.2], place: 'is-outro' },
 ];
 
-// discovery hints show once the camera has "landed" at each robot
-const HINT_WIN = { surveyor: [0.272, 0.415], sojourner: [0.5, 0.635], oppy: [0.69, 0.765] };
+// discovery hints show once the camera has "landed" at each robot.
+// They start only after that act's big title has faded out, so the two never overlap.
+const HINT_END = { surveyor: 0.415, sojourner: 0.635, oppy: 0.765 };
+const HINT_WIN = Object.fromEntries(missions.map((m, i) => [m.id, [TITLES[i + 1].win[3], HINT_END[m.id]]]));
 
 function Title({ t, reduced }) {
   const root = useRef();
@@ -100,10 +102,11 @@ function DiscoveryHint() {
   if (!m) return null;
   return (
     <div ref={el} className="discover-hint" style={{ opacity: 0 }}>
-      <p className="discover-hint-text">
+      <p className="hud-label discover-label">
         <span className="discover-dot" aria-hidden="true" />
-        {m.hint}
+        {story.hintLabel}
       </p>
+      <p className="discover-hint-text">{m.hint}</p>
       <div className="discover-actions">
         <button
           type="button"

@@ -5,7 +5,7 @@
 export const story = {
   brand: 'NASA Space Apps Challenge 2026',
   category: 'Abandoned but Not Forgotten',
-  title: 'Echoes in the Dust',
+  title: 'Lumaris',
   headline: 'The Cosmic *Relay* Race',
   lead: 'Three robots were left on other worlds. Each one passed a baton of knowledge to the next. Now the baton is coming to you.',
   modes: {
@@ -14,6 +14,7 @@ export const story = {
   },
   start: { autopilot: 'Engage helmet: Autopilot', self: 'Self-Pilot', scrollHint: 'or just scroll to steer' },
   switchToAutopilot: 'Switch to Autopilot',
+  hintLabel: 'Your turn',
   tapForSound: 'Tap anywhere to hear the narrator',
   stops: ['Earth', 'Moon', 'Mars: Sojourner', 'Mars: Oppy', 'Your lap'],
   intro: {
@@ -40,7 +41,7 @@ export const story = {
     oppy: ['marathon', 'fourteen', 'rat', 'water', 'rest', 'storm', 'numbers', 'sleep'],
     outro: ['abandoned', 'monuments', 'finish', 'baton', 'turn'],
   },
-  aiLabel: 'Illustration (AI-assisted)',
+  aiLabel: 'AI-generated illustration',
 };
 
 export const missions = [
@@ -152,7 +153,8 @@ export const credits = {
   ],
   built: [
     'Surveyor 3, Sojourner, the rocket and the explorer are simple 3D models built by hand for this project (no photos of real people).',
-    'Sketchbook drawings are labelled “Illustration (AI-assisted)”.',
+    'The rover drawings in the sketchbook are AI-generated and labelled “AI-generated illustration”.',
+    'The narrator voice was made with ElevenLabs AI. Code was written with help from AI coding tools.',
     'The narrator is an AI voice. No faces or voices of anyone under 18 appear anywhere.',
     'The explorer always wears a mirrored helmet, so no face is ever shown.',
   ],

@@ -1,4 +1,4 @@
-# Project Crux: *Echoes in the Dust: The Cosmic Relay Race*
+# Project Crux: *Lumaris: The Cosmic Relay Race*
 
 ## 1. Core Requirements & Agreed Constraints
 
@@ -51,7 +51,7 @@
 * **Project Structure:** React + Vite app powered by a floating retro-futuristic audio dock (`/public/audio/`) and a modular data file (`src/data/missionsData.js`) storing mission specs, human backstories, custom art paths, and NASA archival image references.
 
 ```text
-Create a fully responsive, highly polished React & Vite interactive storytelling web app for the NASA Space Apps Challenge project titled "Echoes in the Dust: The Cosmic Relay Race", focusing on abandoned space hardware (Surveyor 3, Sojourner, and Opportunity) on the Moon and Mars.
+Create a fully responsive, highly polished React & Vite interactive storytelling web app for the NASA Space Apps Challenge project titled "Lumaris: The Cosmic Relay Race", focusing on abandoned space hardware (Surveyor 3, Sojourner, and Opportunity) on the Moon and Mars.
 
 DESIGN & VISUAL THEME (Awwwards & Three.js Inspired):
 - Theme: Deep space cosmic navy (#050814) with amber telemetry highlights, cyan data readouts, and warm parchment text styling.

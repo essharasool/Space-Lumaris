@@ -1,5 +1,5 @@
 /**
- * Web Audio sound engine for Echoes in the Dust.
+ * Web Audio sound engine for Lumaris.
  *
  * 100% synthesized in-code via Web Audio API:
  *   - No external asset dependencies (0 network requests, 0 missing file 404s)

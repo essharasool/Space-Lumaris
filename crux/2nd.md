@@ -1,4 +1,4 @@
-# Crux: *Echoes in the Dust: The Cosmic Relay Race* (Digital Web Blueprint)
+# Crux: *Lumaris: The Cosmic Relay Race* (Digital Web Blueprint)
 
 ## 1. Core Project Direction & Aesthetic
 
@@ -36,7 +36,7 @@
 
 ```markdown
 # Role & Goal
-Act as an expert creative web developer specializing in React, Three.js, GSAP, and modern UI trends. Build the structure for a highly interactive storytelling website titled "Echoes in the Dust: The Cosmic Relay Race." The design language is 100% digital, high-tech, and relies on modern CSS effects, layered SVGs, and interactive cursors.
+Act as an expert creative web developer specializing in React, Three.js, GSAP, and modern UI trends. Build the structure for a highly interactive storytelling website titled "Lumaris: The Cosmic Relay Race." The design language is 100% digital, high-tech, and relies on modern CSS effects, layered SVGs, and interactive cursors.
 
 # Core Mechanics & Flow to Build:
 
