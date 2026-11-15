@@ -3,7 +3,7 @@ import { gsap } from 'gsap';
 import { BookOpen, Zap } from 'lucide-react';
 import { missions, story } from '../data/missions';
 import { live, useStore, triggerRobotAnimation, openSketchbook } from '../lib/store';
-import { band, ramp, sramp } from '../lib/math';
+import { band, ramp, sramp, smoother } from '../lib/math';
 import { splitEm } from './words';
 
 const OPPY = missions.find((m) => m.id === 'oppy');
@@ -14,7 +14,7 @@ const TITLES = [
   ...missions.map((m, i) => ({
     kicker: m.kicker,
     title: m.headline,
-    win: [[0.252, 0.268, 0.315, 0.332], [0.476, 0.49, 0.533, 0.548], [0.66, 0.672, 0.704, 0.716]][i],
+    win: [[0.252, 0.268, 0.315, 0.332], [0.476, 0.49, 0.533, 0.548], [0.66, 0.668, 0.704, 0.716]][i],
     place: ['is-a', 'is-b', 'is-c'][i],
   })),
   { kicker: story.outro.kicker, title: story.outro.title, win: [0.9, 0.915, 0.985, 1.2], place: 'is-outro' },
@@ -37,10 +37,10 @@ function Title({ t, reduced }) {
       el.style.visibility = o > 0.001 ? 'visible' : 'hidden';
       if (o < 0.001 || reduced) return;
       const u = ramp(p, a, d) - 0.5; // drift through the window
-      const enter = sramp(p, a, b);
+      const enter = smoother(ramp(p, a, b));
       words.current.forEach((w, i) => {
         if (!w) return;
-        const y = (1 - enter) * (50 + i * 14) - u * (40 + i * 10);
+        const y = (1 - enter) * (26 + i * 8) - u * (36 + i * 8);
         w.style.transform = `translate3d(0, ${y.toFixed(1)}px, 0)`;
       });
     };

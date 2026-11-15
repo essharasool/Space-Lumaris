@@ -186,7 +186,8 @@ const OUTRO = {
 export const ATMOS_KEYS = [
   AK(0.0, EARTH_DUSK),
   AK(0.15, EARTH_DUSK),
-  AK(0.195, { ...EARTH_DUSK, top: '#18234c', horizon: '#a7b5d6', fog: '#8a9cc4', fogD: 0.004, stars: 0.5 }),
+  AK(0.188, { ...EARTH_DUSK, top: '#101738', horizon: '#90a0c8', fog: '#657aa8', fogD: 0.0025, stars: 0.8 }),
+  AK(0.206, { ...SPACE, top: '#050718', horizon: '#0c1228', fog: '#060a18', fogD: 0.0004, stars: 1.0 }),
   AK(0.218, SPACE),
   AK(0.248, SPACE),
   AK(0.268, MOON_SURF),

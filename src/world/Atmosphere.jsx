@@ -77,7 +77,7 @@ varying float vA;
 varying vec3 vTint;
 void main() {
   float d = length(gl_PointCoord - 0.5);
-  float a = smoothstep(0.5, 0.0, d);
+  float a = smoothstep(0.5, 0.05, d);
   gl_FragColor = vec4(vTint * a * vA, 1.0);
 }`;
 
@@ -117,7 +117,7 @@ void main() {
 
 function useStars() {
   return useMemo(() => {
-    const n = 2600;
+    const n = 5600;
     const r = rng(12);
     const pos = new Float32Array(n * 3);
     const size = new Float32Array(n);
@@ -135,7 +135,7 @@ function useStars() {
       }
       v.normalize().multiplyScalar(9000);
       pos.set([v.x, v.y, v.z], i * 3);
-      size[i] = 0.8 + r() ** 6 * 3.2;
+      size[i] = 1.0 + r() * 1.5 + (r() ** 5) * 3.8;
       phase[i] = r() * 30;
       c.lerpColors(cool, warm, r());
       tint.set([c.r, c.g, c.b], i * 3);

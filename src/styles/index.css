@@ -237,7 +237,7 @@ body {
 }
 .kinetic.is-c {
   left: clamp(1.25rem, 10vw, 10rem);
-  top: 22vh;
+  top: 14vh;
 }
 .kinetic.is-outro {
   left: clamp(1.25rem, 6vw, 6rem);
@@ -972,7 +972,7 @@ body {
   .kinetic.is-b,
   .kinetic.is-c,
   .kinetic.is-outro {
-    top: 9.5rem;
+    top: 7.5rem;
   }
   .captions {
     bottom: calc(9.25rem + env(safe-area-inset-bottom));
